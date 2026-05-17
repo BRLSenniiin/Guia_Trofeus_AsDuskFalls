@@ -1,0 +1,2546 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>As Dusk Falls — Guia de Platina PT-BR</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #08080d;
+        --bgCard: #0e0e16;
+        --bgSec: #12121c;
+        --border: #1c1c2c;
+        --borderA: #3a2a5a;
+        --orange: #e8782a;
+        --orangeDim: #6a3010;
+        --orangeLt: #f4a060;
+        --sand: #d4b070;
+        --sandDim: #6a5020;
+        --violet: #8a60d0;
+        --violetLt: #b090e8;
+        --violetDim: #3a2060;
+        --red: #d03040;
+        --redDim: #580818;
+        --green: #40b870;
+        --greenDim: #104828;
+        --blue: #3090d0;
+        --blueDim: #102848;
+        --text: #e8ddd0;
+        --textDim: #887060;
+        --textMuted: #443830;
+      }
+      body {
+        background: transparent;
+        color: var(--text);
+        font-family: 'Georgia', 'Times New Roman', serif;
+        min-height: 100vh;
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--orangeDim);
+      }
+      .wallpaper {
+        position: fixed;
+        inset: 0;
+
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 5)), url('Images/Wallpaper.png');
+
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+
+        z-index: -1;
+      }
+      /* Atmosphere */
+      .bg-fx {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(ellipse 80% 50% at 15% 0%, #6a301022 0%, transparent 60%),
+          radial-gradient(ellipse 60% 40% at 85% 100%, #3a206018 0%, transparent 60%);
+      }
+      .horizon {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        z-index: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          #e8782a66,
+          #d4b07088,
+          #e8782a66,
+          transparent
+        );
+      }
+      /* Layout */
+      .wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px 16px 60px;
+      }
+      /* Header */
+      .hdr {
+        margin-bottom: 32px;
+        border-bottom: 1px solid var(--orangeDim);
+        padding-bottom: 24px;
+      }
+      .hdr-label {
+        font-size: 10px;
+        letter-spacing: 6px;
+        color: var(--textMuted);
+        margin-bottom: 8px;
+        font-family: monospace;
+        text-transform: uppercase;
+      }
+      .hdr-title {
+        font-size: clamp(26px, 6vw, 52px);
+        margin: 0;
+        line-height: 1.05;
+        font-weight: 700;
+        font-style: italic;
+        background: linear-gradient(135deg, var(--orangeLt), var(--sand), var(--orange));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hdr-logo {
+        width: 300px;
+
+        max-width: 90%;
+
+        height: auto;
+
+        display: block;
+
+        margin: 0 auto;
+      }
+      .hdr-sub {
+        font-size: 13px;
+        color: var(--textDim);
+        margin-top: 8px;
+        letter-spacing: 1px;
+      }
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+      .badge {
+        font-size: 10px;
+        letter-spacing: 2px;
+        padding: 3px 10px;
+        border-radius: 2px;
+        font-family: monospace;
+      }
+      /* Tabs */
+      .tab-bar {
+        display: flex;
+        gap: 0;
+        margin-bottom: 28px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        border-bottom: 2px solid var(--border);
+      }
+      .tab-bar::-webkit-scrollbar {
+        display: none;
+      }
+      .tab-btn {
+        flex: 0 0 auto;
+        padding: 10px 20px;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: var(--textDim);
+        cursor: pointer;
+        font-size: 13px;
+        font-family: inherit;
+        letter-spacing: 0.5px;
+        transition: all 0.2s;
+        margin-bottom: -2px;
+      }
+      .tab-btn.active {
+        border-bottom-color: var(--orange);
+        color: var(--orangeLt);
+      }
+      /* Panels */
+      .panel {
+        display: none;
+      }
+      .panel.active {
+        display: block;
+      }
+      /* Cards */
+      .card {
+        background: var(--bgCard);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .sec-lbl {
+        font-size: 11px;
+        color: var(--textMuted);
+        letter-spacing: 3px;
+        font-family: monospace;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      /* Stats grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--bgCard);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 14px 12px;
+        text-align: center;
+      }
+      .stat-icon {
+        font-size: 22px;
+        margin-bottom: 6px;
+      }
+      .stat-val {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .stat-lbl {
+        font-size: 10px;
+        color: var(--textMuted);
+        letter-spacing: 1px;
+        margin-top: 3px;
+        text-transform: uppercase;
+        font-family: monospace;
+      }
+      /* Diff bar */
+      .diff-bar-wrap {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 8px;
+      }
+      .diff-seg {
+        flex: 1;
+        height: 10px;
+        border-radius: 2px;
+      }
+      /* Book cards */
+      .books-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      @media (max-width: 480px) {
+        .books-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      /* Roadmap */
+      .stage-btn {
+        width: 100%;
+        text-align: left;
+        padding: 16px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: inherit;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        transition: all 0.2s;
+      }
+      .stage-btn.open {
+        border-radius: 6px 6px 0 0;
+      }
+      /* Trophy card */
+      .tcard-btn {
+        width: 100%;
+        text-align: left;
+        padding: 11px 16px;
+        background: var(--bgCard);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: inherit;
+        transition: all 0.2s;
+      }
+      .tcard-btn.open {
+        border-radius: 4px 4px 0 0;
+      }
+      .tcard-body {
+        border: 1px solid var(--border);
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        padding: 12px 16px;
+        font-size: 14px;
+        color: var(--textDim);
+        line-height: 1.7;
+      }
+      /* Pill badges */
+      .pill {
+        font-size: 10px;
+        padding: 1px 7px;
+        border-radius: 2px;
+        letter-spacing: 1px;
+        font-family: monospace;
+        flex-shrink: 0;
+        display: inline-block;
+      }
+      /* Critical cards */
+      .critical-card {
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+        border-left-width: 4px;
+        border-left-style: solid;
+      }
+      .chain-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 6px 0;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      /* Conflict table */
+      .conflict-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .conflict-row:last-child {
+        border-bottom: none;
+      }
+      /* Tips */
+      .tip-item {
+        background: var(--bgCard);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 18px;
+        margin-bottom: 12px;
+        border-left: 3px solid #e8782a66;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+      }
+      /* Chapter filter */
+      .filter-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+        align-items: center;
+      }
+      .filter-btn {
+        padding: 4px 12px;
+        font-size: 12px;
+        font-family: monospace;
+        border: 1px solid var(--border);
+        background: var(--bgCard);
+        color: var(--textDim);
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .filter-btn.active {
+        border-color: var(--orange);
+        background: #e8782a22;
+        color: var(--orangeLt);
+      }
+      .filter-auto {
+        padding: 4px 12px;
+        font-size: 12px;
+        font-family: monospace;
+        border: 1px solid var(--border);
+        background: var(--bgCard);
+        color: var(--textDim);
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-left: 8px;
+      }
+      .filter-auto.on {
+        border-color: var(--green);
+        background: #40b87022;
+        color: var(--green);
+      }
+      /* Decision table */
+      .decision-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      .decision-table th {
+        padding: 8px 10px;
+        text-align: left;
+        color: var(--textMuted);
+        border-bottom: 1px solid var(--border);
+        font-family: monospace;
+        font-weight: 400;
+        letter-spacing: 1px;
+        font-size: 10px;
+      }
+      .decision-table td {
+        padding: 9px 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      /* Alert boxes */
+      .alert-green {
+        background: #40b87012;
+        border: 1px solid #40b87044;
+        border-radius: 6px;
+        padding: 18px;
+        margin-bottom: 16px;
+        border-left: 4px solid var(--green);
+      }
+      .alert-orange {
+        background: #6a301028;
+        border: 1px solid #e8782a44;
+        border-radius: 6px;
+        padding: 16px;
+        border-left: 4px solid var(--orange);
+      }
+      /* Footer */
+      .footer {
+        text-align: center;
+        margin-top: 48px;
+        font-size: 10px;
+        color: var(--textMuted);
+        letter-spacing: 2px;
+        font-family: monospace;
+        line-height: 1.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wallpaper"></div>
+
+    <div class="bg-fx"></div>
+    <div class="horizon"></div>
+
+    <div class="wrap">
+      <!-- HEADER -->
+      <div class="hdr">
+        <div class="hdr-label">Arizona, 1998 · Drama Interativo · Interior/Night</div>
+        <img src="Images/logo.png" alt="As Dusk Falls" class="hdr-logo" />
+        <div class="hdr-sub">GUIA DE PLATINA · PT-BR · Fonte: Exophase</div>
+        <div class="badges" id="headerBadges"></div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tab-bar" id="tabBar">
+        <button class="tab-btn active" data-tab="overview">📊 Visão Geral</button>
+        <button class="tab-btn" data-tab="roadmap">🗺️ Roteiro</button>
+        <button class="tab-btn" data-tab="trophies">🏅 Troféus</button>
+        <button class="tab-btn" data-tab="critical">🔥 Críticos</button>
+        <button class="tab-btn" data-tab="tips">💡 Dicas</button>
+        <button class="tab-btn" data-tab="caminhos">🔀 Caminhos</button>
+      </div>
+
+      <!-- ══ OVERVIEW ══ -->
+      <div class="panel active" id="panel-overview">
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="card">
+          <div class="sec-lbl">DIFICULDADE DA PLATINA</div>
+          <div class="diff-bar-wrap" id="diffBar"></div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 10px;
+              color: var(--textMuted);
+              font-family: monospace;
+            "
+          >
+            <span>1 — TRIVIAL</span>
+            <span style="color: var(--green)">2/10 — MUITO FÁCIL ✓</span>
+            <span>10 — BRUTAL</span>
+          </div>
+        </div>
+
+        <div class="alert-green">
+          <div
+            style="
+              font-size: 13px;
+              color: var(--green);
+              letter-spacing: 1px;
+              margin-bottom: 8px;
+              font-family: monospace;
+            "
+          >
+            ✅ CAPÍTULO SELECT DISPONÍVEL DESDE O INÍCIO
+          </div>
+          <div style="font-size: 14px; color: var(--text); line-height: 1.7">
+            As Dusk Falls tem um
+            <strong style="color: var(--green)"
+              >sistema de Explorar História + Árvore da História</strong
+            >
+            extremamente generoso. Nenhum troféu é verdadeiramente perdível — você sempre pode
+            voltar ao ponto exato na árvore e tomar uma decisão diferente. Em Explore Mode, os
+            troféus desbloqueiam normalmente mas o progresso da árvore
+            <strong style="color: var(--orangeLt)">não salva ao sair</strong> (exceto se usar
+            Overwrite).
+          </div>
+        </div>
+
+        <div class="books-grid" id="booksGrid"></div>
+
+        <div class="alert-orange">
+          <div
+            style="
+              font-size: 12px;
+              color: var(--orange);
+              letter-spacing: 2px;
+              font-family: monospace;
+              margin-bottom: 8px;
+            "
+          >
+            ⚠ EXPLORE MODE — COMO FUNCIONA
+          </div>
+          <ul
+            style="
+              margin: 0;
+              padding-left: 18px;
+              color: var(--textDim);
+              font-size: 13px;
+              line-height: 2;
+            "
+          >
+            <li>Troféus desbloqueiam normalmente no Explore Mode.</li>
+            <li>
+              Ao <strong style="color: var(--orangeLt)">sair</strong> do Explore Mode, o progresso
+              da narrativa <strong style="color: var(--red)">volta ao estado original</strong>.
+            </li>
+            <li>
+              Para decisões cross-capítulo (ex: Execução Suspensa), use
+              <strong style="color: var(--green)">Overwrite</strong> ou um save separado.
+            </li>
+            <li>
+              Troféus que precisam de decisões em múltiplos capítulos devem ser feitos em uma sessão
+              sem sair.
+            </li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-top: 14px; text-align: center">
+          <div class="sec-lbl" style="text-align: center">TROFÉUS EM PT-BR — FONTE OFICIAL</div>
+          <div style="font-size: 13px; color: var(--blue)">
+            🔗 exophase.com/game/as-dusk-falls-psn/trophies/pt/
+          </div>
+          <div style="font-size: 11px; color: var(--textMuted); margin-top: 4px">
+            PSNProfiles: psnprofiles.com/guide/19003-as-dusk-falls-trophy-guide
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ROADMAP ══ -->
+      <div class="panel" id="panel-roadmap">
+        <div
+          style="
+            font-size: 14px;
+            color: var(--textDim);
+            margin-bottom: 24px;
+            line-height: 1.7;
+            font-style: italic;
+          "
+        >
+          Estratégia em 3 estágios para minimizar replays e usar o Chapter Select de forma
+          inteligente.
+        </div>
+        <div id="stageList"></div>
+
+        <div class="card" style="margin-top: 8px">
+          <div class="sec-lbl">📖 ESTRUTURA DOS CAPÍTULOS</div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+              gap: 10px;
+            "
+            id="chapGrid"
+          ></div>
+        </div>
+
+        <div class="card">
+          <div class="sec-lbl">🎬 GUIAS EM VÍDEO</div>
+          <div style="font-size: 12px; color: var(--orange); margin-bottom: 6px">
+            ▸ 100% Achievement Playlist Completa:
+            <span style="color: var(--textDim)"
+              >youtube.com/playlist?list=PLdRzcMLl7YoZSpMnva_l3UStzzVoF9mcK</span
+            >
+          </div>
+          <div style="font-size: 12px; color: var(--orange); margin-bottom: 6px">
+            ▸ Knoef Trophy Guide (EN) — Mais Completo:
+            <span style="color: var(--textDim)"
+              >knoef.info/trophy-guides/ps5/as-dusk-falls-trophy-guide/</span
+            >
+          </div>
+          <div style="font-size: 12px; color: var(--orange)">
+            ▸ PSNProfiles Guide + Story Tree:
+            <span style="color: var(--textDim)"
+              >psnprofiles.com/guide/19003-as-dusk-falls-trophy-guide</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TROPHIES ══ -->
+      <div class="panel" id="panel-trophies">
+        <div class="filter-wrap" id="filterWrap"></div>
+        <div
+          style="
+            font-size: 11px;
+            color: var(--textMuted);
+            font-family: monospace;
+            margin-bottom: 12px;
+          "
+          id="trophyCount"
+        ></div>
+        <div id="trophyList"></div>
+      </div>
+
+      <!-- ══ CRITICAL ══ -->
+      <div class="panel" id="panel-critical">
+        <div
+          style="
+            font-size: 14px;
+            color: var(--textDim);
+            margin-bottom: 24px;
+            line-height: 1.7;
+            font-style: italic;
+          "
+        >
+          Estes troféus são os mais complexos do jogo — não porque são difíceis mecanicamente, mas
+          porque exigem séries específicas de decisões encadeadas ao longo de múltiplos capítulos.
+        </div>
+
+        <!-- Execução Suspensa -->
+        <div class="critical-card" style="background: #d0304012; border-color: var(--red)">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px">
+            <span style="font-size: 26px">⚖️</span>
+            <div>
+              <div style="font-size: 17px; color: var(--red); font-weight: 600">
+                Execução Suspensa
+              </div>
+              <div
+                style="
+                  font-size: 12px;
+                  color: var(--textMuted);
+                  font-style: italic;
+                  font-family: monospace;
+                "
+              >
+                Stay of Execution · Bronze · Ultra Raro (3.3%)
+              </div>
+            </div>
+          </div>
+          <div
+            style="font-size: 13px; color: var(--textDim); line-height: 1.8; margin-bottom: 12px"
+          >
+            A execução de Jay foi cancelada no último segundo. Requer uma cadeia de decisões
+            passivas ao longo do jogo:
+          </div>
+          <div id="stayChain"></div>
+        </div>
+
+        <!-- Passarinho Livre -->
+        <div class="critical-card" style="background: #8a60d012; border-color: var(--violet)">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px">
+            <span style="font-size: 26px">🕊️</span>
+            <div>
+              <div style="font-size: 17px; color: var(--violetLt); font-weight: 600">
+                Passarinho Livre
+              </div>
+              <div
+                style="
+                  font-size: 12px;
+                  color: var(--textMuted);
+                  font-style: italic;
+                  font-family: monospace;
+                "
+              >
+                Free Bird · Bronze · Raro
+              </div>
+            </div>
+          </div>
+          <div
+            style="font-size: 13px; color: var(--textDim); line-height: 1.8; margin-bottom: 12px"
+          >
+            Jay fugiu do FBI e chegou ao Canadá por conta própria (sem Vanessa) e encontrou o guarda
+            florestal.
+          </div>
+          <div id="freeBirdChain"></div>
+        </div>
+
+        <!-- Conflict table -->
+        <div class="card">
+          <div class="sec-lbl" style="color: var(--sand)">
+            ⚔ TROFÉUS MUTUAMENTE EXCLUSIVOS (PRECISAM DE SAVES DIFERENTES)
+          </div>
+          <div id="conflictTable"></div>
+        </div>
+
+        <!-- Big Sam guide -->
+        <div class="card">
+          <div class="sec-lbl" style="color: var(--orange)">🚔 GUIA RÁPIDO — BIG SAM (CAP.1)</div>
+          <div
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px"
+            id="bigSamGrid"
+          ></div>
+        </div>
+      </div>
+
+      <!-- ══ TIPS ══ -->
+      <div class="panel" id="panel-tips">
+        <div id="tipsList"></div>
+        <div class="card" style="margin-top: 8px">
+          <div class="sec-lbl" style="color: var(--sand)">
+            📋 TABELA DE DECISÕES — CAPÍTULO 1 (MAIS TROFÉUS EM MENOS TEMPO)
+          </div>
+          <div style="overflow-x: auto">
+            <table class="decision-table">
+              <thead>
+                <tr>
+                  <th>Decisão</th>
+                  <th>Opção A → Troféu</th>
+                  <th>Opção B → Troféu</th>
+                </tr>
+              </thead>
+              <tbody id="decisionTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CAMINHOS ══ -->
+      <div class="panel" id="panel-caminhos">
+        <div
+          style="
+            font-size: 14px;
+            color: var(--textDim);
+            margin-bottom: 24px;
+            line-height: 1.7;
+            font-style: italic;
+          "
+        >
+          Todos os cruzamentos narrativos do jogo — cada escolha e sua consequência, capítulo por
+          capítulo. Fonte: GameRiv.
+        </div>
+        <div id="caminhosList"></div>
+      </div>
+
+      <div class="footer">
+        AS DUSK FALLS · GUIA DE PLATINA PT-BR · 51 TROFÉUS · 2/10 · SEM TROFÉUS PERDÍVEIS COM
+        CHAPTER SELECT<br />
+        NOMES EM PT-BR: EXOPHASE.COM/GAME/AS-DUSK-FALLS-PSN/TROPHIES/PT/
+      </div>
+    </div>
+
+    <script>
+      // ── DADOS ────────────────────────────────────────────────
+      const C = {
+        bg: '#08080d',
+        bgCard: '#0e0e16',
+        bgSec: '#12121c',
+        border: '#1c1c2c',
+        borderA: '#3a2a5a',
+        orange: '#e8782a',
+        orangeDim: '#6a3010',
+        orangeLt: '#f4a060',
+        sand: '#d4b070',
+        sandDim: '#6a5020',
+        violet: '#8a60d0',
+        violetLt: '#b090e8',
+        violetDim: '#3a2060',
+        red: '#d03040',
+        redDim: '#580818',
+        green: '#40b870',
+        greenDim: '#104828',
+        blue: '#3090d0',
+        blueDim: '#102848',
+        text: '#e8ddd0',
+        textDim: '#887060',
+        textMuted: '#443830',
+      };
+
+      const typeS = {
+        platinum: { bg: '#9b72cf33', border: '#9b72cf', label: 'PLATINA', text: '#c4a0f0' },
+        gold: { bg: '#d4a84333', border: '#d4a843', label: 'OURO', text: '#f0c870' },
+        silver: { bg: '#7090b033', border: '#7090b0', label: 'PRATA', text: '#90b8d0' },
+        bronze: { bg: '#b0603033', border: '#b06030', label: 'BRONZE', text: '#d08860' },
+      };
+
+      // CORRIGIDO: t48 e t23/t24 tinham descrições trocadas
+      const allTrophies = [
+        {
+          id: 'plat',
+          ptbr: 'Caminhos Bem Percorridos',
+          eng: 'Paths Well Travelled',
+          type: 'platinum',
+          ch: 0,
+          auto: true,
+          desc: 'Desbloqueou todos os troféus em As Dusk Falls.',
+        },
+        {
+          id: 't1',
+          ptbr: 'E Assim Começa…',
+          eng: 'And So It Begins…',
+          type: 'silver',
+          ch: 1,
+          auto: true,
+          desc: 'Concluiu o Capítulo 1.',
+        },
+        {
+          id: 't2',
+          ptbr: 'Pretexto',
+          eng: 'Cop Out',
+          type: 'bronze',
+          ch: 1,
+          auto: false,
+          missable: true,
+          desc: "Big Sam morto por Tyler no Desert Dream. Diga 'Só meu pai' → esconda o brinco → 'Vamos sair daqui'.",
+        },
+        {
+          id: 't3',
+          ptbr: 'Mensagem Recebida',
+          eng: 'Message Received',
+          type: 'bronze',
+          ch: 1,
+          auto: false,
+          missable: true,
+          desc: "Avise Big Sam sem levantar suspeita de Tyler. Diga 'Só meu pai' → NÃO esconda o brinco → 'Tem um filho' → 'Em fuga' → 'Nada' → 'Sim' para Big Sam.",
+        },
+        {
+          id: 't4',
+          ptbr: 'O Jogo Virou',
+          eng: 'Tables Turned',
+          type: 'bronze',
+          ch: 1,
+          auto: false,
+          desc: 'Vince conseguiu pegar a arma de Tyler. Complete os QTEs na luta final.',
+        },
+        {
+          id: 't5',
+          ptbr: 'Queima-Roupa',
+          eng: 'Point Blank',
+          type: 'bronze',
+          ch: 1,
+          auto: false,
+          desc: 'Vince falhou em pegar a arma de Tyler. FALHE os QTEs na luta final.',
+        },
+        {
+          id: 't6',
+          ptbr: 'Decodificador',
+          eng: 'Code Breaker',
+          type: 'bronze',
+          ch: 1,
+          auto: false,
+          desc: 'Abriu o cofre de Dante com o código correto. Código = 5926.',
+        },
+        {
+          id: 't7',
+          ptbr: 'Crime Perfeito',
+          eng: 'Smooth Criminal',
+          type: 'bronze',
+          ch: 1,
+          auto: false,
+          desc: 'Pegou o dinheiro sem alertar Dante. Acione o botão de ajuda da Becky → abra o cofre (5926) → complete todos os QTEs.',
+        },
+        {
+          id: 't8',
+          ptbr: 'Sem Jeito',
+          eng: 'Bungled',
+          type: 'bronze',
+          ch: 1,
+          auto: false,
+          desc: 'Falhou no roubo perfeito. NÃO acione o botão → entre códigos errados no cofre.',
+        },
+        {
+          id: 't9',
+          ptbr: 'Preso em uma Armadilha',
+          eng: 'Caught in a Trap',
+          type: 'silver',
+          ch: 2,
+          auto: true,
+          desc: 'Concluiu o Capítulo 2.',
+        },
+        {
+          id: 't10',
+          ptbr: 'Chamando Dr. Walker',
+          eng: 'Paging Dr Walker',
+          type: 'bronze',
+          ch: 2,
+          auto: false,
+          desc: "Removeu a bala de Michelle. Escolha 'Corram!' → Michelle levará um tiro → 'Remover bala' → complete QTEs.",
+        },
+        {
+          id: 't11',
+          ptbr: 'Qual É a sua Emergência?',
+          eng: "What's Your Emergency?",
+          type: 'bronze',
+          ch: 2,
+          auto: false,
+          desc: "Fugiu das amarras e pediu ajuda a Dante. Espere a 3ª opção 'Solte uma piada' aparecer (não escolha imediatamente). Complete o QTE.",
+        },
+        {
+          id: 't12',
+          ptbr: 'Bala Esquivada',
+          eng: 'Dodged A Bullet',
+          type: 'bronze',
+          ch: 2,
+          auto: false,
+          desc: "Avisou Dale sobre o atirador. Como Vince fora do motel, escolha 'Avise Dale'.",
+        },
+        {
+          id: 't13',
+          ptbr: 'Salva-Vidas',
+          eng: 'Lifesaver',
+          type: 'bronze',
+          ch: 2,
+          auto: false,
+          desc: 'Michelle chegou ao hospital. Michelle deve ser baleada → escolha liberá-la como refém.',
+        },
+        {
+          id: 't14',
+          ptbr: 'Mantendo a Fé',
+          eng: 'Keeping The Faith',
+          type: 'bronze',
+          ch: 2,
+          auto: false,
+          desc: "Confiou em Michelle sobre o relacionamento com Bruce. Escolha 'Tudo bem, me desculpe'.",
+        },
+        {
+          id: 't15',
+          ptbr: 'O Que Foi Feito, Feito Está',
+          eng: "What's Done is Done",
+          type: 'bronze',
+          ch: 2,
+          auto: false,
+          desc: "Perdoou Michelle pelo caso com Bruce. 'Não, tem mais coisa' → 'Sente e converse' → 'Perdoar'.",
+        },
+        {
+          id: 't16',
+          ptbr: 'Imperdonável',
+          eng: 'Unforgiveable',
+          type: 'bronze',
+          ch: 2,
+          auto: false,
+          desc: "Não perdoou Michelle. 'Não, tem mais coisa' → 'Sente e converse' → 'Não perdoar'.",
+        },
+        {
+          id: 't17',
+          ptbr: 'Segunda Chance',
+          eng: 'Second Chance',
+          type: 'bronze',
+          ch: 2,
+          auto: false,
+          desc: 'Vince e Michelle salvaram o casamento. Fale positivamente sobre o casamento quando Michelle sair como refém.',
+        },
+        {
+          id: 't18',
+          ptbr: 'Novo Amanhecer',
+          eng: 'New Dawn',
+          type: 'silver',
+          ch: 3,
+          auto: true,
+          desc: 'Concluiu o Capítulo 3.',
+        },
+        {
+          id: 't19',
+          ptbr: 'Do Outro Lado da Lei',
+          eng: 'Better the Devil You Know',
+          type: 'bronze',
+          ch: 3,
+          auto: false,
+          desc: 'Contou aos Holts sobre o bip de Dante. Pegue o bip → complete QTE → avise Sharon.',
+        },
+        {
+          id: 't20',
+          ptbr: 'Longa Mão da Lei',
+          eng: 'Long Arm of the Law',
+          type: 'bronze',
+          ch: 3,
+          auto: false,
+          desc: 'Manteve o bip escondido dos Holts. Pegue o bip → complete QTE → NÃO avise Sharon.',
+        },
+        {
+          id: 't21',
+          ptbr: 'Ela Vem Conosco',
+          eng: "She's Coming with Us",
+          type: 'bronze',
+          ch: 3,
+          auto: false,
+          desc: "Zoe foi levada pelos Holts como refém. Diga 'Vou te matar' a Sharon.",
+        },
+        {
+          id: 't22',
+          ptbr: 'Me Leve no Lugar Dela',
+          eng: 'Take Me Instead',
+          type: 'bronze',
+          ch: 3,
+          auto: false,
+          desc: "Vince convenceu os Holts a levá-lo. Lute contra Dante/Tyler → abaixe a arma → 'Posso ajudá-los'.",
+        },
+        // CORRIGIDO: t23 (Ressurreição) e t24 (Enterrado Vivo) tinham instruções invertidas
+        {
+          id: 't23',
+          ptbr: 'Ressurreição',
+          eng: 'Resurrection',
+          type: 'bronze',
+          ch: 3,
+          auto: false,
+          desc: 'Jay salvou o estranho. Concorde em ajudar quando o estranho surgir e complete a tarefa.',
+        },
+        {
+          id: 't24',
+          ptbr: 'Enterrado Vivo',
+          eng: 'Buried Alive',
+          type: 'bronze',
+          ch: 3,
+          auto: false,
+          desc: 'Jay enterrou o estranho vivo. Recuse ajudar o estranho — ou concorde em enterrá-lo → quando o estranho surgir, NÃO complete a tarefa de resgate.',
+        },
+        {
+          id: 't25',
+          ptbr: 'Nas Profundezas da Floresta',
+          eng: 'Into The Woods',
+          type: 'silver',
+          ch: 4,
+          auto: true,
+          desc: 'Concluiu o Capítulo 4.',
+        },
+        {
+          id: 't26',
+          ptbr: "De Dusk 'til Dawn",
+          eng: "From Dusk 'til Dawn",
+          type: 'gold',
+          ch: 4,
+          auto: true,
+          desc: 'Concluiu os capítulos 1-3.',
+        },
+        {
+          id: 't27',
+          ptbr: 'Invencível',
+          eng: 'Invincible',
+          type: 'bronze',
+          ch: 4,
+          auto: false,
+          desc: 'Vince sobreviveu ao Desert Dream. Vince deve ser levado pelos Holts → Jay desbloqueia a porta do carro.',
+        },
+        {
+          id: 't28',
+          ptbr: 'Um Holt para Sempre',
+          eng: 'Once a Holt',
+          type: 'bronze',
+          ch: 4,
+          auto: false,
+          desc: "Recusou-se a abandonar a família. Ash revela a cabana → como Jay escolha 'Ajudar a família'.",
+        },
+        {
+          id: 't29',
+          ptbr: 'Irmãos de Armas',
+          eng: 'Brothers in Arms',
+          type: 'bronze',
+          ch: 4,
+          auto: false,
+          desc: "Impediu Tyler de cair da árvore. Ash NÃO revela a cabana → complete QTEs → 'Salve Tyler'.",
+        },
+        {
+          id: 't30',
+          ptbr: 'Mãos ao Alto',
+          eng: 'Hands in the Air',
+          type: 'bronze',
+          ch: 4,
+          auto: false,
+          desc: "Jay se rendeu à polícia. Ash revela a cabana → 'Abandone-os' → um policial te persegue → 'Render'.",
+        },
+        {
+          id: 't31',
+          ptbr: 'Sem Volta',
+          eng: 'No Going Back',
+          type: 'bronze',
+          ch: 4,
+          auto: false,
+          desc: "Jay matou o policial. Ash revela a cabana → 'Abandone-os' → policial te persegue → 'Atirar no policial'.",
+        },
+        {
+          id: 't32',
+          ptbr: 'Trilha de Migalhas',
+          eng: 'Trail of Breadcrumbs',
+          type: 'bronze',
+          ch: 4,
+          auto: false,
+          desc: 'Ash revelou a existência da cabana a Dante. Escolha revelar.',
+        },
+        {
+          id: 't33',
+          ptbr: 'Que Cabana?',
+          eng: 'Cabin? What Cabin?',
+          type: 'bronze',
+          ch: 4,
+          auto: false,
+          desc: 'Ash não revelou a cabana. Mantenha em segredo.',
+        },
+        {
+          id: 't34',
+          ptbr: 'Fugitivos',
+          eng: 'Runaways',
+          type: 'silver',
+          ch: 5,
+          auto: true,
+          desc: 'Concluiu o Capítulo 5.',
+        },
+        {
+          id: 't35',
+          ptbr: 'Na Mosca',
+          eng: 'Bullseye',
+          type: 'bronze',
+          ch: 5,
+          auto: false,
+          desc: 'Venceu o desafio de dardos do caminhoneiro. Complete o QTE no bar.',
+        },
+        {
+          id: 't36',
+          ptbr: 'Pleitear a 5ª',
+          eng: 'Plead the 5th',
+          type: 'bronze',
+          ch: 5,
+          auto: false,
+          desc: "Recusou-se a confessar a Bradley. Escolha: 'Tenho direito a um advogado?', Não responda (x2), 'Cadê o advogado?', 'Sou inocente', 'Não fiz nada'.",
+        },
+        {
+          id: 't37',
+          ptbr: 'De Coração a Coração',
+          eng: 'Heart to Heart',
+          type: 'bronze',
+          ch: 5,
+          auto: false,
+          desc: "Jay e Vanessa se apaixonaram. Recuse as drogas → espere lá fora → 'Diga que mentiu' → Beije-a de volta → 'Sim'.",
+        },
+        {
+          id: 't38',
+          ptbr: 'Cada Um por Si',
+          eng: "You're On Your Own",
+          type: 'bronze',
+          ch: 5,
+          auto: false,
+          desc: "Jay e Vanessa seguiram caminhos separados. No acampamento: não revele a identidade → fique como amigos → 'É perigoso ir juntos'.",
+        },
+        {
+          id: 't39',
+          ptbr: 'Bonnie e Clyde',
+          eng: 'Bonnie and Clyde',
+          type: 'bronze',
+          ch: 5,
+          auto: false,
+          desc: "Vanessa decide ir ao Canadá com Jay. Recuse drogas → espere → 'Mentiu' → Beije de volta → 'Sim'.",
+        },
+        {
+          id: 't40',
+          ptbr: 'Cuba Livre',
+          eng: 'Cuba Libre',
+          type: 'bronze',
+          ch: 5,
+          auto: false,
+          desc: 'Paul e Sharon fugiram para Cuba. Paul encontra Sharon no trailer → Dante chega → ajude Sharon.',
+        },
+        {
+          id: 't41',
+          ptbr: 'Pássaro Engaiolado',
+          eng: 'Jailbird',
+          type: 'bronze',
+          ch: 5,
+          auto: false,
+          desc: 'Sharon foi capturada por Dante. Paul encontra Sharon → Dante chega → ajude Dante.',
+        },
+        {
+          id: 't42',
+          ptbr: 'Passado, Tenso',
+          eng: 'Past, Tense',
+          type: 'silver',
+          ch: 6,
+          auto: true,
+          desc: 'Concluiu o Capítulo 6.',
+        },
+        {
+          id: 't43',
+          ptbr: 'Fim da Estrada?',
+          eng: 'End of the Road?',
+          type: 'gold',
+          ch: 6,
+          auto: true,
+          desc: 'Concluiu os capítulos 4-6.',
+        },
+        {
+          id: 't44',
+          ptbr: 'Quebrando o Pão',
+          eng: 'Breaking Bread',
+          type: 'bronze',
+          ch: 6,
+          auto: false,
+          desc: "Zoe dividiu uma refeição com Jay. Jay chegou ao Canadá → 'Não te odeio' → 'Não, não está'.",
+        },
+        {
+          id: 't45',
+          ptbr: 'Procurado',
+          eng: 'Most Wanted',
+          type: 'bronze',
+          ch: 6,
+          auto: false,
+          desc: "Zoe delatou Jay. Jay chegou ao Canadá → 'Sua família arruinou minha vida' → 'Entregue-o'.",
+        },
+        {
+          id: 't46',
+          ptbr: 'Execução Suspensa',
+          eng: 'Stay of Execution',
+          type: 'bronze',
+          ch: 6,
+          auto: false,
+          missable: true,
+          desc: "MAIS DIFÍCIL: Execução de Jay cancelada. Jay deve ser preso (nunca matar/atirar) → Zoe visita na prisão → 'Você cuidou de mim' → 'Seja testemunha'.",
+        },
+        {
+          id: 't47',
+          ptbr: 'Chega de Trauma',
+          eng: 'Enough is Enough',
+          type: 'bronze',
+          ch: 6,
+          auto: false,
+          missable: true,
+          desc: "Zoe não ficou para testemunhar a execução. Jay preso → Zoe visita → 'Sua família arruinou minha vida' → 'Sem mais traumas'.",
+        },
+        // CORRIGIDO: t48 tinha a descrição de t50 (FALHE QTEs)
+        {
+          id: 't48',
+          ptbr: 'Nas Profundezas do Mato',
+          eng: 'Into the Wild',
+          type: 'bronze',
+          ch: 6,
+          auto: false,
+          desc: 'Fugiu do FBI e chegou ao Canadá com sucesso. Seja perseguido pela polícia → complete os QTEs → chegue ao Canadá.',
+        },
+        {
+          id: 't49',
+          ptbr: 'Passarinho Livre',
+          eng: 'Free Bird',
+          type: 'bronze',
+          ch: 6,
+          auto: false,
+          missable: true,
+          desc: 'COMPLEXO: Nunca magoou/matou ninguém como Jay → sucesso em ligar o carro no Cap.5 → siga sozinho para o Canadá → encontre o guarda florestal.',
+        },
+        {
+          id: 't50',
+          ptbr: 'Quase Chegou',
+          eng: 'Almost Made It',
+          type: 'bronze',
+          ch: 6,
+          auto: false,
+          desc: 'Preso na fronteira. Seja perseguido pela polícia → atravesse a fronteira → FALHE os QTEs para ser capturado.',
+        },
+      ];
+
+      const chapters = [
+        {
+          n: 1,
+          title: 'Livro 1 — Colisão',
+          subtitle: 'O Motel Desert Dream',
+          color: C.orange,
+          icon: '🏨',
+          book: 1,
+        },
+        {
+          n: 2,
+          title: 'Capítulo 2',
+          subtitle: 'Reféns e Revelações',
+          color: C.orange,
+          icon: '🔫',
+          book: 1,
+        },
+        {
+          n: 3,
+          title: 'Capítulo 3',
+          subtitle: 'Fuga e Consequências',
+          color: C.sand,
+          icon: '🚗',
+          book: 1,
+        },
+        {
+          n: 4,
+          title: 'Livro 2 — Expansão',
+          subtitle: 'A Cabana e a Floresta',
+          color: C.violet,
+          icon: '🌲',
+          book: 2,
+        },
+        {
+          n: 5,
+          title: 'Capítulo 5',
+          subtitle: 'Caminhos Separados',
+          color: C.violet,
+          icon: '🎯',
+          book: 2,
+        },
+        {
+          n: 6,
+          title: 'Capítulo 6 — Final',
+          subtitle: 'Acerto de Contas',
+          color: C.blue,
+          icon: '⚖️',
+          book: 2,
+        },
+      ];
+
+      // CORRIGIDO: openStage inicia null (nenhum expandido por padrão)
+      const stageRoadmap = [
+        {
+          n: 1,
+          title: 'Jogatina 1 — Play-through Natural (com guia)',
+          color: C.orange,
+          hours: '~5-6h',
+          focus:
+            'Complete os 6 capítulos pegando os troféus mais fáceis e preparando Execução Suspensa + Passarinho Livre',
+          decisions: [
+            'Jay: NUNCA atirar, matar ou magoar ninguém durante todo o jogo',
+            'Cap.1 — Becky: use código 5926 no cofre (Decodificador + Crime Perfeito juntos)',
+            'Cap.2 — Espere a 3ª opção antes de escolher (Qual É a sua Emergência?)',
+            'Cap.3 — Jay: Ressurreição (concorde em ajudar e complete a tarefa quando o estranho surgir)',
+            "Cap.4 — Ash: REVELE a cabana (Trilha de Migalhas) → Jay: 'Abandonar' → 'Render' (Mãos ao Alto)",
+            'Cap.5 — Jay: Sucesso em ligar o carro → Recuse drogas → Beije Vanessa (De Coração a Coração)',
+            'Cap.5 — Jay: Siga SOZINHO para o Canadá (necessário para Passarinho Livre)',
+            "Cap.6 — Zoe: visite Jay no Canadá → 'Não te odeio' → 'Não, não está' (Quebrando o Pão)",
+          ],
+        },
+        {
+          n: 2,
+          title: 'Limpeza — Seleção de Capítulos (Explore Mode)',
+          color: C.violet,
+          hours: '~4-6h',
+          focus:
+            'Use Explorar História + Árvore da História para pegar os troféus de caminhos alternativos',
+          decisions: [
+            "Cap.1 Motel — Pretexto (Big Sam morto): diga 'Só meu pai' → esconda brinco → 'Vamos sair daqui'",
+            "Cap.1 Motel — Mensagem Recebida (Big Sam alertado): 'Só meu pai' → NÃO esconda brinco → 'Tem filho' → 'Em fuga'",
+            'Cap.1 Becky — Sem Jeito: não acione botão, entre código errado',
+            'Cap.1 Final — Queima-Roupa: FALHE os QTEs da luta com Tyler',
+            "Cap.2 — Chamando Dr. Walker + Salva-Vidas: 'Corram!' → remova bala → libere Michelle",
+            "Cap.2 — Imperdonável: 'Não, tem mais' → 'Não perdoar'",
+            "Cap.3 — Ela Vem Conosco: diga 'Vou te matar' para Sharon",
+            'Cap.3 — Enterrado Vivo: recuse ajuda ao estranho ou não complete a tarefa de resgate',
+            "Cap.4 — Irmãos de Armas: Ash NÃO revela cabana → complete QTEs → 'Salve Tyler'",
+            "Cap.4 — Sem Volta: Ash revela cabana → 'Abandonar' → 'Atirar no policial'",
+            'Cap.5 — Pássaro Engaiolado: como Paul, ajude Dante (não Sharon)',
+            'Cap.6 — Execução Suspensa + Chega de Trauma (ver Stage 3 antes!)',
+          ],
+        },
+        {
+          n: 3,
+          title: 'Stage Especial — Execução Suspensa (Troféu Mais Difícil)',
+          color: C.red,
+          hours: '~1-2h',
+          focus: 'Requer série de decisões específicas CROSS-CAPÍTULO. Use Overwrite/Novo Save.',
+          decisions: [
+            'Jay NUNCA atirou, matou ou magoou alguém em todo o jogo',
+            'Cap.3 — Jay salva Bear do enforcamento (Ressurreição) — Bear não matará Vince por causa disso',
+            'Cap.4 — Jay é preso ou se rende à polícia (não vai ao Canadá neste save)',
+            'Cap.6 — Zoe visita Jay NA PRISÃO (não no Canadá)',
+            "Cap.6 — Zoe escolhe: 'Você cuidou de mim' → 'Seja testemunha' → EXECUÇÃO SUSPENSA",
+            "Depois: volte ao mesmo ponto da árvore → 'Sua família arruinou minha vida' → 'Sem mais traumas' → CHEGA DE TRAUMA",
+            'ATENÇÃO: Use Explorar Mode → carregue Cap.6 da árvore → NÃO saia sem obter os troféus',
+          ],
+        },
+      ];
+
+      const stats = [
+        { label: 'Total Troféus', v: '51', icon: '🏅', c: C.orange },
+        { label: 'Platina', v: 'Sim ✓', icon: '🏆', c: C.sand },
+        { label: 'Ouros', v: '2', icon: '🥇', c: C.sand },
+        { label: 'Pratas', v: '6', icon: '🥈', c: C.blue },
+        { label: 'Bronzes', v: '42', icon: '🥉', c: '#b06030' },
+        { label: 'Tempo Casual', v: '10-12h', icon: '⏱️', c: C.textDim },
+        { label: 'Tempo Otimizado', v: '7-9h', icon: '⚡', c: C.green },
+        { label: 'Dificuldade', v: '2/10', icon: '💪', c: C.green },
+        { label: 'Mín. Jogatinas', v: '1 + Select', icon: '🎮', c: C.orange },
+        { label: 'Perdíveis', v: '0 (com Select)', icon: '✅', c: C.green },
+      ];
+
+      const tips = [
+        {
+          icon: '🌳',
+          title: 'Árvore da História — Seu Melhor Amigo',
+          text: "O menu 'Explorar História' mostra a árvore narrativa completa com checkpoints. Clique em qualquer nó da árvore para voltar a aquele exato momento. Use para coletar troféus de caminhos alternativos sem refazer capítulos inteiros.",
+        },
+        {
+          icon: '💾',
+          title: 'Explore Mode vs. Overwrite',
+          text: 'Explore Mode: Troféus funcionam mas o progresso da árvore reverte ao sair. Use para troféus de capítulos únicos. Overwrite: Salva o novo caminho permanentemente. Necessário para troféus cross-capítulo como Execução Suspensa. Crie saves separados antes de Overwrite!',
+        },
+        {
+          icon: '⏱️',
+          title: 'Espere pela 3ª Opção',
+          text: "Em alguns diálogos, uma terceira opção aparece se você esperar alguns segundos. O troféu 'Qual É a sua Emergência?' requer exatamente isso — aguarde antes de escolher 'Insulte Tyler' ou 'Desobedeça calmamente'.",
+        },
+        {
+          icon: '🎯',
+          title: 'QTEs São Simples',
+          text: 'Os Quick Time Events em As Dusk Falls são tranquilos — janelas de tempo generosas. Para troféus que exigem FALHAR no QTE (Queima-Roupa, Sem Jeito), simplesmente não pressione o botão.',
+        },
+        {
+          icon: '📖',
+          title: 'Dois Livros, Uma Lógica',
+          text: 'Livro 1 (Colisão): foco em Vince, Michelle e os Holts. Livro 2 (Expansão): foco em Jay adulto e Zoe adulta. Troféus de Execução Suspensa e Passarinho Livre vivem no Livro 2 — planeje seu save com antecedência.',
+        },
+        {
+          icon: '🔄',
+          title: 'Troféus Mutuamente Exclusivos',
+          text: '~8 pares de troféus são mutuamente exclusivos por capítulo (ver aba 🔥 Críticos). Todos podem ser obtidos via Chapter Select. A maioria está em capítulos curtos — Limpeza + Chapter Select resolve em 2-3h extras.',
+        },
+        {
+          icon: '🏎️',
+          title: 'Sequência Otimizada',
+          text: 'Jogatina 1 com guide → pegue os troféus mais complexos (Passarinho Livre, Execução Suspensa) como prioridade → depois use Chapter Select para os alternativos simples capítulo por capítulo.',
+        },
+        {
+          icon: '📞',
+          title: 'Código do Cofre de Dante',
+          text: 'O código é sempre 5926. Memorize! Você vai usar para Decodificador (abrir com código) e para Crime Perfeito (roubo perfeito). Em Sem Jeito, entre qualquer outro número de propósito.',
+        },
+      ];
+
+      const conflictData = [
+        [
+          'Execução Suspensa',
+          'Jay preso → Zoe na prisão',
+          'Passarinho Livre',
+          'Jay fugiu ao Canadá sozinho',
+        ],
+        ['Quebrando o Pão', 'Zoe perdoa Jay no Canadá', 'Procurado', 'Zoe delata Jay no Canadá'],
+        ['Crime Perfeito', 'Roubo perfeito na casa de Dante', 'Sem Jeito', 'Roubo mal-sucedido'],
+        ['Pretexto', 'Big Sam morto por Tyler', 'Mensagem Recebida', 'Big Sam alertado, não morto'],
+        [
+          'Cuba Livre',
+          'Paul ajuda Sharon (fuga)',
+          'Pássaro Engaiolado',
+          'Paul ajuda Dante (Sharon capturada)',
+        ],
+        ['Ressurreição', 'Jay salva o estranho', 'Enterrado Vivo', 'Jay enterra o estranho'],
+        [
+          'Me Leve no Lugar Dela',
+          'Vince se entrega aos Holts',
+          'Ela Vem Conosco',
+          'Zoe é levada pelos Holts',
+        ],
+        [
+          'Um Holt para Sempre',
+          'Jay ajuda a família (Ash revelou cabana)',
+          'Irmãos de Armas',
+          'Jay salva Tyler (Ash não revelou)',
+        ],
+      ];
+
+      // ── STATE ────────────────────────────────────────────────
+      let openStage = null;
+      let filterCh = 0;
+      let showAuto = true;
+      let openTrophy = null;
+
+      // ── RENDERS ─────────────────────────────────────────────
+      function renderHeaderBadges() {
+        const badges = [
+          { l: '2/10 DIFICULDADE', c: C.green },
+          { l: '1 RUN + CHAPTER SELECT', c: C.orange },
+          { l: '7-9H OTIMIZADO', c: C.sand },
+          { l: 'SEM TROFÉUS PERDÍVEIS', c: C.green },
+          { l: '51 TROFÉUS', c: C.violet },
+        ];
+        document.getElementById('headerBadges').innerHTML = badges
+          .map(
+            (b) => `
+    <span class="badge" style="border:1px solid ${b.c}55;background:${b.c}18;color:${b.c}">${b.l}</span>
+  `
+          )
+          .join('');
+      }
+
+      function renderStats() {
+        document.getElementById('statsGrid').innerHTML = stats
+          .map(
+            (s) => `
+    <div class="stat-card" style="border-top:3px solid ${s.c}88">
+      <div class="stat-icon">${s.icon}</div>
+      <div class="stat-val" style="color:${s.c}">${s.v}</div>
+      <div class="stat-lbl">${s.label}</div>
+    </div>
+  `
+          )
+          .join('');
+      }
+
+      function renderDiffBar() {
+        const bar = document.getElementById('diffBar');
+        bar.innerHTML = Array.from(
+          { length: 10 },
+          (_, i) => `<div class="diff-seg" style="background:${i < 2 ? C.green : C.border}"></div>`
+        ).join('');
+      }
+
+      function renderBooks() {
+        const books = [
+          {
+            title: 'Livro 1: Colisão',
+            subs: 'Capítulos 1-3',
+            icon: '🏨',
+            c: C.orange,
+            desc: 'O incidente no Motel Desert Dream, 1998. Vince, Michelle, Zoe vs. Família Holt.',
+          },
+          {
+            title: 'Livro 2: Expansão',
+            subs: 'Capítulos 4-6',
+            icon: '🌲',
+            c: C.violet,
+            desc: 'Anos depois. Jay em fuga. Zoe adulta lidando com o trauma. Desbloqueado após o Livro 1.',
+          },
+        ];
+        document.getElementById('booksGrid').innerHTML = books
+          .map(
+            (b) => `
+    <div style="background:var(--bgCard);border:1px solid ${b.c}44;border-radius:6px;padding:16px;border-top:3px solid ${b.c}">
+      <div style="font-size:22px;margin-bottom:6px">${b.icon}</div>
+      <div style="font-size:15px;color:${b.c};margin-bottom:2px;font-style:italic">${b.title}</div>
+      <div style="font-size:11px;color:var(--textMuted);font-family:monospace;margin-bottom:8px;letter-spacing:1px">${b.subs}</div>
+      <div style="font-size:13px;color:var(--textDim);line-height:1.6">${b.desc}</div>
+    </div>
+  `
+          )
+          .join('');
+      }
+
+      function renderStages() {
+        document.getElementById('stageList').innerHTML = stageRoadmap
+          .map((stage, si) => {
+            const isOpen = openStage === si;
+            return `
+    <div style="margin-bottom:14px">
+      <button onclick="toggleStage(${si})" class="stage-btn ${isOpen ? 'open' : ''}"
+        style="background:${isOpen ? stage.color + '20' : C.bgCard};border:1px solid ${isOpen ? stage.color : C.border};
+        ${isOpen ? `box-shadow:0 0 14px ${stage.color}44,0 0 3px ${stage.color}22` : ''}">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+            <div style="width:30px;height:30px;border-radius:50%;border:2px solid ${stage.color};background:${stage.color}22;
+              display:flex;align-items:center;justify-content:center;font-size:14px;color:${stage.color};font-weight:700;flex-shrink:0">${stage.n}</div>
+            <div>
+              <div style="font-size:15px;color:${stage.color};font-weight:600">${stage.title}</div>
+              <div style="font-size:11px;color:var(--textMuted);font-family:monospace;letter-spacing:1px">⏱ ${stage.hours}</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--textDim);margin-top:6px;margin-left:42px">${stage.focus}</div>
+        </div>
+        <span style="color:${stage.color};font-size:16px;margin-left:12px;flex-shrink:0">${isOpen ? '▲' : '▼'}</span>
+      </button>
+      ${
+        isOpen
+          ? `
+      <div style="background:${stage.color}08;border:1px solid ${stage.color}44;border-top:none;border-radius:0 0 6px 6px;padding:16px 20px">
+        ${stage.decisions
+          .map(
+            (d, di) => `
+        <div style="padding:8px 14px;margin-bottom:6px;border-left:3px solid ${stage.color}66;background:${stage.color}08;border-radius:0 4px 4px 0;font-size:14px;color:var(--text);line-height:1.6">
+          <span style="color:${stage.color};margin-right:8px;font-family:monospace">${di + 1}.</span>${d}
+        </div>`
+          )
+          .join('')}
+      </div>`
+          : ''
+      } 
+    </div>`;
+          })
+          .join('');
+      }
+
+      function toggleStage(si) {
+        openStage = openStage === si ? null : si;
+        renderStages();
+      }
+
+      function renderChapGrid() {
+        document.getElementById('chapGrid').innerHTML = chapters
+          .map((ch) => {
+            const count = allTrophies.filter((t) => t.ch === ch.n).length;
+            return `
+    <div style="padding:10px 14px;background:var(--bgSec);border:1px solid ${ch.color}44;border-radius:4px;border-left:3px solid ${ch.color}">
+      <div style="font-size:16px;margin-bottom:4px">${ch.icon} <span style="font-size:13px;color:${ch.color}">${ch.title}</span></div>
+      <div style="font-size:12px;color:var(--textDim)">${ch.subtitle}</div>
+      <div style="font-size:11px;color:var(--textMuted);font-family:monospace;margin-top:4px">${count} troféus neste capítulo</div>
+    </div>`;
+          })
+          .join('');
+      }
+
+      function renderFilterRow() {
+        const btns = [0, 1, 2, 3, 4, 5, 6]
+          .map(
+            (n) => `
+    <button class="filter-btn ${filterCh === n ? 'active' : ''}" onclick="setFilterCh(${n})">${n === 0 ? 'TODOS' : `Cap.${n}`}</button>
+  `
+          )
+          .join('');
+        const autoBtn = `<button class="filter-auto ${showAuto ? 'on' : ''}" onclick="toggleAuto()">${showAuto ? '✓ Automáticos' : '○ Automáticos'}</button>`;
+        document.getElementById('filterWrap').innerHTML =
+          `<div style="font-size:11px;color:var(--textMuted);font-family:monospace;margin-right:4px">CAPÍTULO:</div>` +
+          btns +
+          autoBtn;
+      }
+
+      function renderTrophies() {
+        const filtered = allTrophies.filter((t) => {
+          if (filterCh !== 0 && t.ch !== filterCh) return false;
+          if (!showAuto && t.auto) return false;
+          return true;
+        });
+        document.getElementById('trophyCount').textContent = `Mostrando ${filtered.length} troféus`;
+        document.getElementById('trophyList').innerHTML = filtered
+          .map((t) => {
+            const ts = typeS[t.type];
+            const isOpen = openTrophy === t.id;
+            return `
+    <div style="margin-bottom:6px">
+      <button onclick="toggleTrophy('${t.id}')" class="tcard-btn ${isOpen ? 'open' : ''}"
+        style="background:${isOpen ? ts.border + '15' : C.bgCard};border-color:${isOpen ? ts.border : C.border}">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:2px">
+            <span class="pill" style="background:${ts.bg};border:1px solid ${ts.border};color:${ts.text}">${ts.label}</span>
+            ${t.auto ? `<span class="pill" style="background:#40b87018;border:1px solid #40b87044;color:${C.green}">AUTO</span>` : ''}
+            ${t.missable ? `<span class="pill" style="background:#d0304018;border:1px solid #d0304044;color:${C.red}">⚠ REQUER ATENÇÃO</span>` : ''}
+            ${t.ch > 0 ? `<span class="pill" style="background:var(--bgSec);border:1px solid var(--border);color:var(--textDim)">Cap.${t.ch}</span>` : ''}
+          </div>
+          <div style="font-size:14px;color:${ts.text}">${t.ptbr}</div>
+          <div style="font-size:11px;color:var(--textMuted);font-style:italic">${t.eng}</div>
+        </div>
+        <span style="color:var(--textMuted);flex-shrink:0">${isOpen ? '▲' : '▼'}</span>
+      </button>
+      ${isOpen ? `<div class="tcard-body" style="background:${ts.border}0a;border-color:${ts.border}33">${t.desc}</div>` : ''} 
+    </div>`;
+          })
+          .join('');
+      }
+
+      function setFilterCh(n) {
+        filterCh = n;
+        renderFilterRow();
+        renderTrophies();
+      }
+      function toggleAuto() {
+        showAuto = !showAuto;
+        renderFilterRow();
+        renderTrophies();
+      }
+      function toggleTrophy(id) {
+        openTrophy = openTrophy === id ? null : id;
+        renderTrophies();
+      }
+
+      function renderCritical() {
+        // Stay of execution chain
+        const stayItems = [
+          { ok: true, t: 'Jay NUNCA atira, mata ou agride ninguém em todo o jogo' },
+          {
+            ok: true,
+            t: 'Cap.3 — Jay salva Bear do enforcamento (Ressurreição) → Bear não matará Vince',
+          },
+          {
+            ok: true,
+            t: 'Cap.4 — Jay é preso ou se rende à polícia (não vai ao Canadá neste save)',
+          },
+          { ok: true, t: 'Cap.6 — Zoe visita Jay NA PRISÃO (não no Canadá)' },
+          { ok: true, t: "Cap.6 — Zoe escolhe: 'Você cuidou de mim' → 'Seja testemunha'" },
+          {
+            ok: false,
+            t: "IMPORTANTE: Use Overwrite ou save separado para esta cadeia — ela conflita com 'Passarinho Livre'",
+          },
+        ];
+        document.getElementById('stayChain').innerHTML = stayItems
+          .map(
+            (s, i) => `
+    <div class="chain-row" style="border-bottom:${i < 5 ? `1px solid ${C.border}` : 'none'};color:${s.ok ? C.text : C.orange}">
+      <span style="color:${s.ok ? C.green : C.orange};flex-shrink:0;font-family:monospace">${s.ok ? '✓' : '⚠'}</span>
+      ${s.t}
+    </div>
+  `
+          )
+          .join('');
+
+        // Free bird chain
+        const fbItems = [
+          'Jay nunca matou nem magoou ninguém',
+          'Cap.5 — Jay SUCESSO em ligar o carro (complete os QTEs)',
+          'Cap.5 — Jay sai SOZINHO para o Canadá (diga que é perigoso ir com Vanessa)',
+          'Cap.6 — Jay encontra o guarda florestal no caminho (ocorre automaticamente ao chegar)',
+        ];
+        document.getElementById('freeBirdChain').innerHTML = fbItems
+          .map(
+            (s, i) => `
+    <div class="chain-row" style="border-bottom:${i < 3 ? `1px solid ${C.border}` : 'none'};color:var(--text)">
+      <span style="color:${C.violet};flex-shrink:0">→</span> ${s}
+    </div>
+  `
+          )
+          .join('');
+
+        // Conflict table
+        document.getElementById('conflictTable').innerHTML = conflictData
+          .map(
+            (row, i) => `
+    <div class="conflict-row" ${i === conflictData.length - 1 ? 'style="border-bottom:none"' : ''}>
+      <div>
+        <div style="font-size:13px;color:${C.green}">${row[0]}</div>
+        <div style="font-size:11px;color:var(--textMuted)">${row[1]}</div>
+      </div>
+      <div style="font-size:12px;color:${C.orange};text-align:center;font-family:monospace;flex-shrink:0">⟷</div>
+      <div style="text-align:right">
+        <div style="font-size:13px;color:${C.red}">${row[2]}</div>
+        <div style="font-size:11px;color:var(--textMuted)">${row[3]}</div>
+      </div>
+    </div>
+  `
+          )
+          .join('');
+
+        // Big Sam guide
+        document.getElementById('bigSamGrid').innerHTML = `
+    <div style="border-right:1px solid var(--border);padding-right:16px">
+      <div style="font-size:12px;color:${C.red};font-family:monospace;margin-bottom:8px">PRETEXTO (Big Sam morre)</div>
+      ${[
+        "Diga aos Holts: 'Só meu pai'",
+        'Big Sam chega → ESCONDA o brinco no chão',
+        "Diga a Big Sam: 'Só meu pai'",
+        "Michelle entra → 'Vamos sair daqui'",
+      ]
+        .map(
+          (s, i, a) => `
+      <div style="font-size:12px;color:var(--textDim);padding:4px 0;border-bottom:${i < a.length - 1 ? `1px solid ${C.border}` : 'none'}">${i + 1}. ${s}</div>`
+        )
+        .join('')}
+    </div>
+    <div>
+      <div style="font-size:12px;color:${C.green};font-family:monospace;margin-bottom:8px">MENSAGEM RECEBIDA (Big Sam alertado)</div>
+      ${[
+        "Diga aos Holts: 'Só meu pai'",
+        'Big Sam chega → NÃO esconda o brinco',
+        "Diga: 'Tem filho', 'Em fuga', 'Nada' para Michelle, 'Sim' para Big Sam",
+      ]
+        .map(
+          (s, i, a) => `
+      <div style="font-size:12px;color:var(--textDim);padding:4px 0;border-bottom:${i < a.length - 1 ? `1px solid ${C.border}` : 'none'}">${i + 1}. ${s}</div>`
+        )
+        .join('')}
+    </div>
+  `;
+      }
+
+      function renderTips() {
+        document.getElementById('tipsList').innerHTML = tips
+          .map(
+            (t) => `
+    <div class="tip-item">
+      <span style="font-size:26px;flex-shrink:0">${t.icon}</span>
+      <div>
+        <div style="font-size:14px;color:${C.orangeLt};margin-bottom:6px">${t.title}</div>
+        <div style="font-size:13px;color:var(--textDim);line-height:1.7">${t.text}</div>
+      </div>
+    </div>
+  `
+          )
+          .join('');
+
+        const decRows = [
+          ['Big Sam x Tyler', 'Morra (Pretexto)', 'Alerte, sobreviva (Mensagem Recebida)'],
+          ['Luta com Tyler', 'Complete QTE (O Jogo Virou)', 'Falhe QTE (Queima-Roupa)'],
+          ['Cofre de Dante', 'Código 5926 (Decodificador)', 'Código errado (parte de Sem Jeito)'],
+          ['Roubo na casa', 'Perfeito + QTEs (Crime Perfeito)', 'Falhe tudo (Sem Jeito)'],
+        ];
+        document.getElementById('decisionTable').innerHTML = decRows
+          .map(
+            (row, i) => `
+    <tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:9px 10px;color:var(--text)">${row[0]}</td>
+      <td style="padding:9px 10px;color:${C.green}">${row[1]}</td>
+      <td style="padding:9px 10px;color:${C.red}">${row[2]}</td>
+    </tr>
+  `
+          )
+          .join('');
+      }
+
+      // ── CAMINHOS ─────────────────────────────────────────────
+      const caminhosCaps = [
+        {
+          n: 1,
+          title: 'Capítulo 1: Desert Dream',
+          subtitle: 'Cruzamentos do Motel',
+          color: '#e8782a',
+          icon: '🏨',
+          choices: [
+            {
+              title: 'Ir com Jim ou Ficar com Michelle',
+              opts: [
+                {
+                  label: 'Ir com Jim',
+                  desc: 'Jim agradece por você tê-lo levado na viagem. Revela que tem um tumor cerebral e não havia contatado Vince por ~30 anos. Pede perdão e deseja recomeçar.',
+                },
+                {
+                  label: 'Ficar com Michelle',
+                  desc: 'Você fica ajudando Michelle com os ombros doloridos. Jim fica magoado por não ter ido com ele. Ambas as opções revelam o passado de Jim.',
+                },
+              ],
+            },
+            {
+              title: 'Obedecer ou Recusar (Assaltantes)',
+              opts: [
+                {
+                  label: 'Obedecer',
+                  desc: 'Vince deita no chão e um flashback começa, 30 minutos antes.',
+                },
+                {
+                  label: 'Recusar',
+                  desc: 'Vince leva um soco dos assaltantes e você é levado ao mesmo flashback.',
+                },
+              ],
+            },
+            {
+              title: 'Inserir o Código do Cofre',
+              opts: [
+                {
+                  label: 'Sem código / Errado',
+                  desc: 'Jay é pego. Dale fica de joelhos. O xerife pede reforços.',
+                },
+                {
+                  label: 'Código correto (5926)',
+                  desc: 'Jay abre o cofre e encontra uma grande quantia em dinheiro.',
+                },
+              ],
+            },
+            {
+              title: 'Lutar contra o Xerife ou Correr para a Porta',
+              opts: [
+                {
+                  label: 'Lutar contra o Xerife',
+                  desc: 'Jay nocauteia o xerife com um castiçal e tenta escapar.',
+                },
+                {
+                  label: 'Correr para a porta',
+                  desc: 'Jay atira no xerife com uma espingarda, derrubando-o.',
+                },
+              ],
+            },
+            {
+              title: 'Apontar a Arma ou Largá-la',
+              opts: [
+                {
+                  label: 'Apontar',
+                  desc: 'Jay entra no motel distraindo Joyce e a golpeia para desarmar. Tyler faz o mesmo com Vince. Vocês vencem os assaltantes.',
+                },
+                {
+                  label: 'Largar',
+                  desc: 'Jay entra distraindo Joyce, mas Tyler a nocauteia. Tyler também empurra Vince ao chão.',
+                },
+              ],
+            },
+            {
+              title: 'Acalmar o Cão ou Acalmar Dale',
+              opts: [
+                {
+                  label: 'Acalmar o cão',
+                  desc: 'Você falha em acalmar Zeus. Dale fica mais irritado e ameaça atirar enquanto Joyce o provoca.',
+                },
+                {
+                  label: 'Acalmar Dale',
+                  desc: 'Você tenta acalmar Dale, mas Joyce o agita ainda mais — ele aponta a arma para ela.',
+                },
+              ],
+            },
+            {
+              title: 'Pedir Joyce para Recuar ou Tentar Quietar Zeus de Novo',
+              opts: [
+                {
+                  label: 'Pedir Joyce para recuar',
+                  desc: 'Você tenta parar Joyce lembrando-a de seu filho.',
+                },
+                {
+                  label: 'Quietar Zeus',
+                  desc: 'Você consegue aquietar Zeus. Vince cola fita na boca de Joyce para evitar que ela provoque Dale.',
+                },
+              ],
+            },
+            {
+              title: 'Só meu pai / Minha família / Contar uma piada',
+              opts: [
+                {
+                  label: 'Só meu pai',
+                  desc: 'Vince diz que só seu pai está ali. Todos o apoiam pela resposta. Base para os troféus Pretexto e Mensagem Recebida.',
+                },
+                {
+                  label: 'Minha família',
+                  desc: 'Tyler manda Dale procurar todos os familiares e diz que não gosta de Vince por expor a família.',
+                },
+                {
+                  label: 'A Circo (Piada)',
+                  desc: 'Vince faz uma escolha que não ajuda a situação e deixa Tyler ainda mais irritado.',
+                },
+              ],
+            },
+            {
+              title: 'Deixar a Evidência ou Esconder',
+              opts: [
+                {
+                  label: 'Esconder evidência',
+                  desc: 'Vince esconde o medalhão de Joyce embaixo da mesa. A polícia não encontra.',
+                },
+                {
+                  label: 'Deixar evidência',
+                  desc: 'O policial encontra o medalhão e entende a situação — sussurra para Vince que vai chamar reforços.',
+                },
+              ],
+            },
+            {
+              title: 'Implorar, Atacar Tyler ou Pegar a Arma',
+              opts: [
+                {
+                  label: 'Implorar',
+                  desc: 'Vince implora para ser levado no lugar de Michelle, mas sem sucesso.',
+                },
+                {
+                  label: 'Pegar a arma de Tyler (QTE)',
+                  desc: 'Vince pega a arma completando o QTE e vira a situação. Tyler o parabeniza pela coragem inesperada.',
+                },
+                {
+                  label: 'Atacar Tyler',
+                  desc: 'Vince consegue a arma também, mas primeiro ataca Tyler — QTE é necessário.',
+                },
+              ],
+            },
+            {
+              title: 'Atirar em Tyler ou Se Render',
+              opts: [
+                {
+                  label: 'Atirar em Tyler',
+                  desc: 'Vince puxa o gatilho enquanto a tela escurece.',
+                },
+                {
+                  label: 'Se render',
+                  desc: 'Tyler pega a arma de volta e aponta para Vince. Atira, mas a espingarda está vazia. A sorte salva Vince.',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          n: 2,
+          title: 'Capítulo 2: Economics 101',
+          subtitle: 'Reféns e Revelações',
+          color: '#d4a843',
+          icon: '🔫',
+          choices: [
+            {
+              title: 'Correr ou Ficar Escondido',
+              opts: [
+                {
+                  label: 'Correr',
+                  desc: 'Vince e os outros tentam escapar do motel, mas a arma do assaltante acerta Michelle.',
+                },
+                {
+                  label: 'Ficar escondido',
+                  desc: 'Ficam escondidos; um policial cai no tiroteio. Jim tenta fugir sozinho mas é nocauteado. Um flashback revela a traição de Michelle com Bruce.',
+                },
+              ],
+            },
+            {
+              title: 'Tudo bem, me desculpe ou Não, tem mais coisa',
+              opts: [
+                {
+                  label: 'Tudo bem, me desculpe',
+                  desc: 'Vince pede desculpas pela suspeita. Troféu Mantendo a Fé.',
+                },
+                {
+                  label: 'Não, tem mais coisa',
+                  desc: 'Vince pressiona o assunto; Michelle confessa a traição e pede perdão. Você escolhe perdoar ou não — afeta o casamento. Troféus O Que Foi Feito / Imperdonável.',
+                },
+              ],
+            },
+            {
+              title: 'Enviar Michelle, Zoe ou Jim como refém',
+              opts: [
+                {
+                  label: 'Enviar Michelle',
+                  desc: 'Michelle vai por causa de seus ferimentos graves. Abre o cruzamento do perdão.',
+                },
+                { label: 'Enviar Zoe', desc: 'Zoe é enviada pois foi profundamente traumatizada.' },
+                {
+                  label: 'Enviar Jim',
+                  desc: 'Jim revela que mentiu sobre o tumor. Você pode perdoá-lo ou não.',
+                },
+              ],
+            },
+            {
+              title: 'Exigir Pizza ou Mostrar Respeito',
+              opts: [
+                {
+                  label: 'Exigir pizza',
+                  desc: 'Dale fica furioso e manda os dois pararem de fazer algazarra.',
+                },
+                {
+                  label: 'Mostrar respeito',
+                  desc: 'Dale permite que vocês tenham pizza. Você pode vasculhar os pertences deles e pegar itens úteis.',
+                },
+              ],
+            },
+            {
+              title: 'Avisar Dale ou Não Avisar (Franco-atirador)',
+              opts: [
+                {
+                  label: 'Avisar Dale',
+                  desc: 'Vince empurra Dale para fora da mira assim que o tiro é disparado (QTE), salvando-o. Os dois correm de volta ao motel. Afeta o relacionamento com Dale. Troféu Bala Esquivada.',
+                },
+                { label: 'Não avisar Dale', desc: 'O atirador acerta Dale na cabeça — ele morre.' },
+              ],
+            },
+          ],
+        },
+        {
+          n: 3,
+          title: 'Capítulo 3: Small Seconds',
+          subtitle: 'Fuga e Consequências',
+          color: '#d4b070',
+          icon: '🚗',
+          choices: [
+            {
+              title: 'Não Avisar Sharon ou Avisar sobre o Bip de Dante',
+              opts: [
+                {
+                  label: 'Não avisar',
+                  desc: 'Vince não conta a Sharon sobre o bip que Dante lhe deu. Afeta o relacionamento com Dante.',
+                },
+                {
+                  label: 'Avisar',
+                  desc: 'Vince conta a Sharon sobre o bip e o plano de Dante para encontrar o livro. Afeta o relacionamento com Dante.',
+                },
+              ],
+            },
+            {
+              title: 'Guardar o Relógio ou Dar o Relógio',
+              opts: [
+                {
+                  label: 'Guardar o relógio',
+                  desc: 'Você fica com o relógio, mas o homem fica furioso. Bear vem ao resgate.',
+                },
+                {
+                  label: 'Dar o relógio',
+                  desc: 'Bear aparece para atacar o homem; um estranho pega o relógio. Bear mata o Estranho e pede ajuda para esconder o corpo.',
+                },
+              ],
+            },
+            {
+              title: 'Processar a Companhia Aérea ou Aceitar o Dinheiro',
+              opts: [
+                {
+                  label: 'Processar',
+                  desc: 'Vince decide processar a companhia aérea. Michelle o parabeniza pela coragem. Permite abrir uma escola de voo no futuro.',
+                },
+                {
+                  label: 'Aceitar o dinheiro',
+                  desc: 'Vince aceita o dinheiro em troca de assinar o acordo de confidencialidade.',
+                },
+              ],
+            },
+            {
+              title: 'Não confiar em Jim ou Confiar em Jim',
+              opts: [
+                { label: 'Não confiar em Jim', desc: 'Vince não dá nova chance ao pai.' },
+                { label: 'Confiar em Jim', desc: 'Vince dá uma nova chance ao pai.' },
+              ],
+            },
+            {
+              title: 'Obedecer, Recusar ou Implorar (Enterrar o Estranho)',
+              opts: [
+                { label: 'Obedecer', desc: 'Jay enterra o Estranho vivo. Troféu Enterrado Vivo.' },
+                {
+                  label: 'Recusar',
+                  desc: 'Os dois brigam; o Estranho aproveita para escapar. Afeta o relacionamento entre o Estranho e Jay. Troféu Ressurreição.',
+                },
+                {
+                  label: 'Implorar',
+                  desc: 'Jay implora ao pai para reconsiderar enterrar o Estranho.',
+                },
+              ],
+            },
+            {
+              title: 'Abandonar Bear ou Cortá-lo da Corda',
+              opts: [
+                { label: 'Abandonar', desc: 'Jay abandona o celeiro com Bear pendurado na corda.' },
+                {
+                  label: 'Cortar a corda',
+                  desc: 'Jay corta a corda e salva o pai, mesmo que Bear ainda fique ferido. Afeta o relacionamento de Jay e Bear.',
+                },
+              ],
+            },
+            {
+              title: 'Abaixar a Arma ou Mantê-la Levantada',
+              opts: [
+                {
+                  label: 'Abaixar',
+                  desc: 'Vince abaixa a arma e persuade Sharon a deixar Zoe ir.',
+                },
+                {
+                  label: 'Mantê-la levantada',
+                  desc: 'Vince insiste várias vezes para impedir Sharon de fazer Zoe de refém. Se Bear foi salvo, Jay atirará em Vince de forma não-letal. Caso contrário, Sharon libera Zoe.',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          n: 4,
+          title: 'Capítulo 4: Shima',
+          subtitle: 'A Cabana e a Floresta',
+          color: '#8a60d0',
+          icon: '🌲',
+          choices: [
+            {
+              title: 'Desbloquear a Porta ou Deixar Zoe no Carro',
+              opts: [
+                {
+                  label: 'Desbloquear a porta',
+                  desc: 'Você permite que Zoe escape do carro. Garante a segurança dela, pois o carro bate depois.',
+                },
+                {
+                  label: 'Deixar no carro',
+                  desc: 'Zoe permanece no carro e ambos sofrem o acidente de carro mais tarde.',
+                },
+              ],
+            },
+            {
+              title: 'Agir Assustador, Falar Calmo, Correr ou Jogar Balas (vs. Javali)',
+              opts: [
+                {
+                  label: 'Jogar balas',
+                  desc: 'Jogue as balas de açúcar para distrair o javali e escapar — só funciona se você as guardou antes.',
+                },
+                { label: 'Agir assustador', desc: 'Você tenta assustar o javali.' },
+                {
+                  label: 'Falar calmo',
+                  desc: 'Você tenta acalmar o javali, mas ele te atropela e você precisa correr.',
+                },
+              ],
+            },
+            {
+              title: 'Sair na Surdina ou Dizer Tchau a Vanessa',
+              opts: [
+                {
+                  label: 'Dizer tchau',
+                  desc: 'Jay se despede de Vanessa, que pergunta se ele quer estudar juntos de novo.',
+                },
+                {
+                  label: 'Sair na surdina',
+                  desc: 'Jay tenta sair escondido para não ser visto pelo pai de Vanessa.',
+                },
+              ],
+            },
+            {
+              title: 'Esconder no Armário ou Embaixo da Cama',
+              opts: [
+                {
+                  label: 'Esconder no armário',
+                  desc: 'Bear te encontra. Você precisa tomar decisões inteligentes para escapar.',
+                },
+                { label: 'Embaixo da cama', desc: 'Bear não te encontra.' },
+              ],
+            },
+            {
+              title: 'Manter a Cabana em Segredo ou Revelar a Cabana',
+              opts: [
+                {
+                  label: 'Manter segredo',
+                  desc: 'Você não conta sobre a cabana e Bear ao xerife Dante, que te leva de volta para a mãe em segurança. Troféu Que Cabana?',
+                },
+                {
+                  label: 'Revelar',
+                  desc: 'Você conta tudo a Dante sobre a cabana. Troféu Trilha de Migalhas.',
+                },
+              ],
+            },
+            {
+              title: 'Pisar nos Dedos de Tyler ou Salvar Tyler (na Árvore)',
+              opts: [
+                {
+                  label: 'Pisar nos dedos',
+                  desc: 'Você pisa nos dedos de Tyler, ele cai e se machuca. Você vai embora ignorando o pedido de socorro.',
+                },
+                {
+                  label: 'Salvar Tyler',
+                  desc: 'Você salva Tyler e o puxa para cima. Tyler então pergunta sobre seus planos. Troféu Irmãos de Armas.',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          n: 5,
+          title: 'Capítulo 5: Paradise Found',
+          subtitle: 'Caminhos Separados',
+          color: '#3090d0',
+          icon: '🎯',
+          choices: [
+            {
+              title: 'Avisar Dante ou Não Avisar (Sharon com a Tesoura)',
+              opts: [
+                {
+                  label: 'Avisar Dante',
+                  desc: 'Sharon falha em esfaquear Dante; os dois entram em luta e Sharon o desarma.',
+                },
+                {
+                  label: 'Não avisar Dante',
+                  desc: 'Dante te pede a arma para fazer Sharon se render.',
+                },
+              ],
+            },
+            {
+              title: 'Ajudar Sharon ou Ajudar Dante',
+              opts: [
+                {
+                  label: 'Ajudar Sharon',
+                  desc: 'Paul bate em Dante com um pote de café e os dois fogem. Se escolher isso, o par vive uma vida luxuosa no final. Troféu Cuba Livre.',
+                },
+                {
+                  label: 'Ajudar Dante',
+                  desc: 'Você dá a arma a Dante e Sharon é presa. Troféu Pássaro Engaiolado.',
+                },
+              ],
+            },
+            {
+              title: 'Tomar a Pílula ou Recusar (Festa de Todd)',
+              opts: [
+                { label: 'Tomar a pílula', desc: 'Jay toma o ecstasy e logo sente os efeitos.' },
+                { label: 'Recusar', desc: 'Jay recusa a droga.' },
+              ],
+            },
+            {
+              title: 'Bater nele ou Deixar os Dois (Todd e Vanessa)',
+              opts: [
+                {
+                  label: 'Bater nele',
+                  desc: 'Jay soca Todd no rosto e os dois brigam (QTE). Vanessa fica brava com você.',
+                },
+                {
+                  label: 'Deixar os dois',
+                  desc: 'Jay deixa os dois e espera Vanessa do lado de fora.',
+                },
+              ],
+            },
+            {
+              title: 'Largá-lo ou Bater com a Garrafa (se brigou com Todd)',
+              opts: [
+                {
+                  label: 'Largá-lo',
+                  desc: 'Jay larga a garrafa e vai embora. Todd continua provocando.',
+                },
+                {
+                  label: 'Bater com a garrafa',
+                  desc: 'Você acerta Todd com a garrafa e ele perde os sentidos.',
+                },
+              ],
+            },
+            {
+              title: 'Não Revelar ou Contar Tudo (Jay para Vanessa)',
+              opts: [
+                {
+                  label: 'Não revelar',
+                  desc: 'Jay não conta sobre sua fuga e tenta desviar do assunto.',
+                },
+                { label: 'Contar tudo', desc: 'Jay revela tudo sobre seu passado a Vanessa.' },
+              ],
+            },
+            {
+              title: 'Quero Você Aqui ou É Melhor Você Ir',
+              opts: [
+                {
+                  label: 'Quero você aqui',
+                  desc: 'Jay diz que quer Vanessa com ele; ela pede uma razão para ficar. Jay fala sobre quando ela foi ao motel.',
+                },
+                {
+                  label: 'É melhor você ir',
+                  desc: 'Jay diz a Vanessa que é melhor ela voltar para casa. Jay ficará sozinho no capítulo final.',
+                },
+              ],
+            },
+            {
+              title: 'Fazer a Promessa ou Deixá-la Ir',
+              opts: [
+                {
+                  label: 'Fazer a promessa',
+                  desc: 'Jay promete não ser mais violento. Vanessa fica feliz e decide ir com ele para o Canadá. Troféus De Coração a Coração e Bonnie e Clyde.',
+                },
+                {
+                  label: 'Deixá-la ir',
+                  desc: 'Jay deixa Vanessa partir e fica sozinho. Troféu Cada Um por Si.',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          n: 6,
+          title: 'Capítulo 6: Cascade',
+          subtitle: 'Acerto de Contas',
+          color: '#3090d0',
+          icon: '⚖️',
+          choices: [
+            {
+              title: 'Arrancar o Carro ou Esperar o Policial',
+              opts: [
+                {
+                  label: 'Arrancar o carro',
+                  desc: 'Jay foge enquanto o policial está ocupado consultando o banco de dados.',
+                },
+                {
+                  label: 'Esperar o policial',
+                  desc: 'O servidor está fora do ar e a polícia deixa Jay ir. Mesmo assim, os policiais notificam o FBI.',
+                },
+              ],
+            },
+            {
+              title: 'Se Render ou Correr (Guarda Florestal)',
+              opts: [
+                {
+                  label: 'Se render',
+                  desc: 'Jay admite ser o garoto do incidente no Arizona, mas diz que era inocente. O guarda o deixa ir.',
+                },
+                { label: 'Correr', desc: 'Jay foge e escapa.' },
+              ],
+            },
+            {
+              title: 'Pular Sem Ela ou Pular Juntos (se Vanessa foi junto)',
+              opts: [
+                {
+                  label: 'Pular sem ela',
+                  desc: 'Jay diz a Vanessa para voltar com o pai. Ele pula sozinho e chega ao Canadá. Vanessa vai para a juvenil e se torna advogada. Troféu Cada Um por Si.',
+                },
+                {
+                  label: 'Pular juntos',
+                  desc: 'Jay e Vanessa pulam juntos e chegam ao Canadá. Vivem felizes por alguns anos, mas Vanessa volta para os EUA, deixando Jay sozinho. Troféu Bonnie e Clyde.',
+                },
+              ],
+            },
+            {
+              title: 'Sua família arruinou minha vida ou Não te odeio (Zoe visita Jay)',
+              opts: [
+                {
+                  label: 'Sua família arruinou minha vida',
+                  desc: 'Zoe está com raiva de Jay por ter destruído sua família e vida. Jay pede desculpas e se oferece para ser preso. Leva ao cruzamento Entregar ou Perdoar.',
+                },
+                {
+                  label: 'Não te odeio',
+                  desc: 'Zoe diz que não está com raiva e perdoa Jay. Leva ao cruzamento Não, Você Não É / Quem Não É.',
+                },
+              ],
+            },
+            {
+              title: "Entregar Jay ou Perdoá-lo (se escolheu 'Sua família arruinou minha vida')",
+              opts: [
+                {
+                  label: 'Entregar',
+                  desc: 'Zoe liga para o 911 e Jay é preso. Abre o cruzamento final na prisão. Troféu Procurado.',
+                },
+                {
+                  label: 'Perdoar',
+                  desc: 'Zoe perdoa Jay e pede para ele parar de enviar cartas. Os dois se abraçam. Troféu Quebrando o Pão.',
+                },
+              ],
+            },
+            {
+              title: "Não, Você Não É / Quem Não É (se escolheu 'Não te odeio')",
+              opts: [
+                {
+                  label: 'Não, você não é',
+                  desc: 'Zoe diz a Jay que ele não é uma má pessoa porque cuidou dela quando eram crianças. Jay fica feliz e a convida para jantar. Troféu Quebrando o Pão.',
+                },
+                {
+                  label: 'Quem não é',
+                  desc: 'Zoe pergunta quem não é infeliz ou partido e vai embora. Jay logo também parte.',
+                },
+              ],
+            },
+            {
+              title:
+                'Sem Mais Traumas, Seja Testemunha ou Por Quê Eu? (Jay preso, aguardando execução)',
+              opts: [
+                {
+                  label: 'Sem mais traumas',
+                  desc: 'Zoe diz a Jay que ele precisa de um amigo, mas não é ela — e vai embora. Troféu Chega de Trauma.',
+                },
+                {
+                  label: 'Seja testemunha',
+                  desc: 'Zoe diz que ficará em um lugar próximo onde Jay possa vê-la durante a execução. Troféu Execução Suspensa (se a cadeia de decisões foi cumprida).',
+                },
+                {
+                  label: 'Por quê eu?',
+                  desc: 'Zoe pergunta por que ela quando Jay pede que ela esteja presente. Jay responde que não há mais ninguém.',
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      let openCaminhosCap = null;
+      let openCaminhosChoice = {};
+
+      function renderCaminhos() {
+        const el = document.getElementById('caminhosList');
+        if (!el) return;
+        el.innerHTML = caminhosCaps
+          .map((cap, ci) => {
+            const isCapOpen = openCaminhosCap === ci;
+            return `
+    <div style="margin-bottom:14px">
+      <button onclick="toggleCaminhosCap(${ci})"
+        style="width:100%;text-align:left;padding:16px 20px;border-radius:${isCapOpen ? '6px 6px 0 0' : '6px'};
+        cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;
+        background:${isCapOpen ? cap.color + '20' : C.bgCard};border:1px solid ${isCapOpen ? cap.color : C.border};
+        transition:all .2s;${isCapOpen ? `box-shadow:0 0 14px ${cap.color}44` : ''}">
+        <div style="display:flex;align-items:center;gap:12px;flex:1">
+          <div style="width:34px;height:34px;border-radius:50%;border:2px solid ${cap.color};background:${cap.color}22;
+            display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${cap.icon}</div>
+          <div>
+            <div style="font-size:15px;color:${cap.color};font-weight:600">${cap.title}</div>
+            <div style="font-size:11px;color:var(--textMuted);font-family:monospace;letter-spacing:1px">${cap.subtitle} · ${cap.choices.length} cruzamentos</div>
+          </div>
+        </div>
+        <span style="color:${cap.color};font-size:16px;margin-left:12px;flex-shrink:0">${isCapOpen ? '▲' : '▼'}</span>
+      </button>
+      ${
+        isCapOpen
+          ? `
+      <div style="background:${cap.color}08;border:1px solid ${cap.color}44;border-top:none;border-radius:0 0 6px 6px;padding:16px">
+        ${cap.choices
+          .map((ch, chi) => {
+            const key = ci + '-' + chi;
+            const isOpen = openCaminhosChoice[key];
+            return `
+          <div style="margin-bottom:10px">
+            <button onclick="toggleCaminhosChoice('${key}')"
+              style="width:100%;text-align:left;padding:10px 14px;background:${isOpen ? cap.color + '18' : C.bgSec};
+              border:1px solid ${isOpen ? cap.color + '88' : C.border};border-radius:${isOpen ? '4px 4px 0 0' : '4px'};
+              cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;
+              transition:all .2s;">
+              <div style="display:flex;align-items:center;gap:8px;flex:1">
+                <span style="color:${cap.color};font-family:monospace;font-size:11px;flex-shrink:0">${String(chi + 1).padStart(2, '0')}</span>
+                <span style="font-size:13px;color:${isOpen ? cap.color : 'var(--text)'};font-weight:${isOpen ? '600' : '400'}">${ch.title}</span>
+              </div>
+              <span style="font-size:11px;color:var(--textMuted);font-family:monospace;margin-left:8px;flex-shrink:0">${ch.opts.length} opções ${isOpen ? '▲' : '▼'}</span>
+            </button>
+            ${
+              isOpen
+                ? `
+            <div style="border:1px solid ${cap.color}44;border-top:none;border-radius:0 0 4px 4px;background:${cap.color}06">
+              ${ch.opts
+                .map(
+                  (opt, oi) => `
+              <div style="padding:12px 16px;${oi < ch.opts.length - 1 ? `border-bottom:1px solid ${C.border}` : ''}">
+                <div style="display:flex;align-items:flex-start;gap:10px">
+                  <div style="flex-shrink:0;margin-top:2px;width:22px;height:22px;border-radius:50%;background:${cap.color}22;border:1px solid ${cap.color}66;
+                    display:flex;align-items:center;justify-content:center;font-size:10px;color:${cap.color};font-family:monospace;font-weight:700">
+                    ${String.fromCharCode(65 + oi)}
+                  </div>
+                  <div style="flex:1">
+                    <div style="font-size:13px;color:${cap.color};font-weight:600;margin-bottom:4px">${opt.label}</div>
+                    <div style="font-size:13px;color:var(--textDim);line-height:1.7">${opt.desc}</div>
+                  </div>
+                </div>
+              </div>`
+                )
+                .join('')}
+            </div>`
+                : ''
+            } 
+          </div>`;
+          })
+          .join('')}
+      </div>`
+          : ''
+      } 
+    </div>`;
+          })
+          .join('');
+      }
+
+      function toggleCaminhosCap(ci) {
+        openCaminhosCap = openCaminhosCap === ci ? null : ci;
+        openCaminhosChoice = {};
+        renderCaminhos();
+      }
+
+      function toggleCaminhosChoice(key) {
+        openCaminhosChoice[key] = !openCaminhosChoice[key];
+        renderCaminhos();
+      }
+
+      // ── TABS ─────────────────────────────────────────────────
+      function setupTabs() {
+        document.getElementById('tabBar').addEventListener('click', (e) => {
+          const btn = e.target.closest('.tab-btn');
+          if (!btn) return;
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+          document.getElementById('panel-' + tab).classList.add('active');
+        });
+      }
+
+      function init() {
+        renderHeaderBadges();
+        renderStats();
+        renderDiffBar();
+        renderBooks();
+        renderStages();
+        renderChapGrid();
+        renderFilterRow();
+        renderTrophies();
+        renderCritical();
+        renderTips();
+        renderCaminhos();
+        setupTabs();
+      }
+
+      init();
+    </script>
+  </body>
+</html>
