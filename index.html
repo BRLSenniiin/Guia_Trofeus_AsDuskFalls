@@ -240,16 +240,15 @@ strong.purple{ color:var(--night-light); }
   background-image: radial-gradient(rgba(217,169,105,0.12) 1px, transparent 1px);
   background-size:18px 18px;
   cursor:grab; touch-action:none;
+  user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
 }
 .cam-workspace.cam-grabbing{ cursor:grabbing; }
 
 .cam-chapter-select-float{
-  position:absolute; top:10px; left:10px; z-index:20;
-  background:rgba(21,13,10,0.92); border:1px solid var(--sand);
-  padding:7px 9px; display:flex; flex-direction:column; gap:4px; max-width:180px;
-  box-shadow:0 4px 14px rgba(0,0,0,0.6);
+  background:var(--bg-section); border-bottom:1px solid var(--border);
+  padding:8px 14px; display:flex; align-items:center; gap:8px;
 }
-.cam-chapter-select-float label{ font-family:'Space Mono',monospace; font-size:8.5px; letter-spacing:1.5px; color:var(--sand); }
+.cam-chapter-select-float label{ font-family:'Space Mono',monospace; font-size:8.5px; letter-spacing:1.5px; color:var(--sand); white-space:nowrap; }
 .cam-chapter-select-float select{
   background:var(--bg-card); color:var(--text); border:1px solid var(--border); padding:4px 6px;
   font-family:'Bitter',serif; font-size:12px; cursor:pointer; max-width:165px;
@@ -269,6 +268,104 @@ strong.purple{ color:var(--night-light); }
 .cam-zoom-val{ font-family:'Space Mono',monospace; font-size:9.5px; color:var(--text-dim); min-width:32px; text-align:center; }
 
 .cam-node-col{ display:flex; flex-direction:column; gap:16px; }
+.camg-node-col{ display:flex; flex-direction:column; gap:22px; }
+.cam-lanes{ display:flex; flex-direction:column; gap:34px; }
+.cam-lane{ display:flex; flex-direction:row; align-items:flex-start; gap:14px; }
+.cam-lane-label{
+  flex:0 0 auto; align-self:stretch; display:flex; align-items:center; justify-content:center;
+  writing-mode:vertical-rl; transform:rotate(180deg); font-family:'Space Mono',monospace;
+  font-size:10px; font-weight:700; letter-spacing:2px; padding:8px 5px; min-width:20px;
+}
+.cam-lane-label-vince{ background:rgba(255,107,53,0.16); color:var(--dusk1-light); border:1px solid var(--dusk1); }
+.cam-lane-label-jay{ background:rgba(91,111,158,0.18); color:var(--night-light); border:1px solid var(--night); }
+.cam-lane-col{ width:200px; min-width:200px; display:flex; flex-direction:column; gap:16px; }
+
+/* ═══ CAMG: motor de grafo navegável (Cap. 1) ═══ */
+.camg-workspace{
+  position:relative; height:min(62vh, 480px); overflow:auto; background:var(--bg);
+  background-image:radial-gradient(var(--border-glow) 1px, transparent 1px); background-size:22px 22px;
+  border:1px solid var(--border); touch-action:pan-x pan-y;
+  user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;
+}
+.camg-workspace.camg-grabbing{ cursor:grabbing; }
+.camg-nodes-container{ position:relative; padding:30px; display:flex; flex-direction:row; gap:30px; align-items:flex-start; transform-origin:0 0; min-width:max-content; }
+.camg-svg-canvas{ position:absolute; top:0; left:0; pointer-events:none; overflow:visible; z-index:1; }
+
+.camg-lane-legend{ display:flex; gap:14px; flex-wrap:wrap; font-family:'Space Mono',monospace; font-size:9.5px; color:var(--text-dim); margin-bottom:10px; }
+.camg-lane-chip{ display:inline-flex; align-items:center; gap:5px; font-weight:700; letter-spacing:0.5px; }
+.camg-lane-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+.camg-node-card{
+  position:relative; z-index:2; width:212px; background:var(--bg-card); border:1px solid var(--border);
+  padding:14px; font-size:11.5px; line-height:1.5; transition:opacity .2s, border-color .2s;
+}
+.camg-node-card.lane-vince{ border-left:4px solid var(--dusk1); }
+.camg-node-card.lane-jay{ border-left:4px solid var(--night); }
+.camg-node-card.dimmed-node{ opacity:0.4; }
+.camg-node-card.selected{ opacity:1; border-color:var(--dusk1); box-shadow:0 0 0 1px var(--dusk1) inset; }
+.camg-node-card.final-node.selected{ border-color:var(--ouro); box-shadow:0 0 0 1px var(--ouro) inset; }
+.camg-node-header{ display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:9px; }
+.camg-node-id{ font-family:'Space Mono',monospace; font-size:8.5px; letter-spacing:1px; color:var(--text-muted); }
+.camg-lane-badge{ font-family:'Space Mono',monospace; font-size:8px; font-weight:700; letter-spacing:1px; padding:2px 6px; border-radius:2px; }
+.camg-lane-badge.lane-vince{ background:rgba(255,107,53,0.16); color:var(--dusk1-light); }
+.camg-lane-badge.lane-jay{ background:rgba(91,111,158,0.18); color:var(--night-light); }
+.camg-trophy-badge{ display:inline-block; font-size:9.5px; color:var(--ouro); background:var(--ouro-dim); border:1px solid var(--ouro); padding:2px 6px; margin-bottom:8px; border-radius:2px; }
+.camg-node-title{ font-family:'Bitter',serif; font-weight:800; font-size:12.5px; color:var(--text); margin-bottom:7px; }
+.camg-node-text{ color:var(--text-dim); margin-bottom:11px; }
+.camg-node-options{ display:flex; flex-direction:column; gap:7px; }
+.camg-option-btn{
+  display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; text-align:left;
+  background:var(--bg-section); border:1px solid var(--border); color:var(--text); font-size:10.5px;
+  padding:8px 9px; cursor:pointer; font-family:inherit; line-height:1.35; transition:background .15s, border-color .15s;
+}
+.camg-option-btn:hover:not(:disabled){ border-color:var(--dusk1); background:var(--dusk1-dim); }
+.camg-option-btn.chosen{ border-color:var(--dusk1); background:var(--dusk1-dim); color:var(--dusk1-light); font-weight:700; }
+.camg-option-btn.locked{ opacity:0.45; cursor:not-allowed; }
+.camg-status-msg{ text-align:center; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:1px; padding:7px; border:1px dashed var(--border); color:var(--text-muted); }
+.camg-status-msg.final{ border-color:var(--ouro); color:var(--ouro); }
+
+path.camg-connection{ stroke:var(--border-glow); stroke-width:2; fill:none; stroke-dasharray:4,4; }
+path.camg-connection.active.lane-vince{ stroke:var(--dusk1); stroke-width:2.5; stroke-dasharray:none; filter:drop-shadow(0 0 3px rgba(255,107,53,0.5)); }
+path.camg-connection.active.lane-jay{ stroke:var(--night); stroke-width:2.5; stroke-dasharray:none; filter:drop-shadow(0 0 3px rgba(91,111,158,0.5)); }
+path.camg-connection.active.final{ stroke:var(--ouro); stroke-width:2.5; stroke-dasharray:none; filter:drop-shadow(0 0 3px rgba(255,200,87,0.55)); }
+
+.camg-hud-row{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:8px; }
+.camg-hud-label{ font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--text-muted); }
+.camg-trophy-chip{ font-family:'Space Mono',monospace; font-size:9px; color:var(--ouro); background:var(--ouro-dim); border:1px solid var(--ouro); padding:2px 6px; border-radius:2px; }
+.camg-zoom-controls{ position:absolute; right:10px; bottom:10px; z-index:6; display:flex; align-items:center; gap:4px; background:var(--bg-card); border:1px solid var(--border); padding:4px; }
+.camg-zoom-btn{ width:22px; height:22px; background:var(--bg-section); border:1px solid var(--border); color:var(--text); cursor:pointer; font-size:13px; line-height:1; }
+.camg-zoom-btn:hover{ border-color:var(--dusk1); }
+.camg-zoom-val{ font-family:'Space Mono',monospace; font-size:9.5px; color:var(--text-dim); min-width:32px; text-align:center; }
+
+.camg-info-btn{
+  flex:0 0 auto; width:18px; height:18px; border-radius:50%; background:transparent;
+  border:1px solid var(--text-muted); color:var(--text-dim); font-size:10px; line-height:1;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace;
+}
+.camg-info-btn:hover{ border-color:var(--dusk1); color:var(--dusk1-light); }
+
+.camg-popup-backdrop{
+  display:none; position:fixed; inset:0; background:rgba(10,6,4,0.78); z-index:200;
+  align-items:center; justify-content:center; padding:24px;
+}
+.camg-popup-backdrop.open{ display:flex; }
+.camg-popup{
+  background:var(--bg-card); border:1px solid var(--dusk1); max-width:440px; width:100%;
+  max-height:82vh; overflow-y:auto; padding:20px 20px 16px; position:relative;
+  box-shadow:0 12px 40px rgba(0,0,0,0.6);
+}
+.camg-popup-close{
+  position:absolute; top:10px; right:10px; width:24px; height:24px; background:var(--bg-section);
+  border:1px solid var(--border); color:var(--text-dim); cursor:pointer; font-size:13px; line-height:1;
+}
+.camg-popup-close:hover{ border-color:var(--dusk1); color:var(--dusk1-light); }
+.camg-popup-eyebrow{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.camg-popup-title{ font-family:'Bitter',serif; font-weight:800; font-size:16px; color:var(--text); margin:0 0 10px; padding-right:20px; }
+.camg-popup-text{ font-size:12px; color:var(--text-dim); line-height:1.55; margin-bottom:14px; }
+.camg-popup-option{ padding:10px 0; border-top:1px solid var(--border); }
+.camg-popup-option:first-of-type{ border-top:1px solid var(--border); }
+.camg-popup-option-label{ font-family:'Bitter',serif; font-weight:700; font-size:12px; color:var(--dusk1-light); margin-bottom:4px; }
+.camg-popup-option-detail{ font-size:11.5px; color:var(--text-dim); line-height:1.5; }
 .cam-node{
   background:var(--bg-card); border:1px solid var(--border); border-left:3px solid var(--border-glow);
   width:200px; padding:10px 11px; transition: opacity .2s, border-color .2s, box-shadow .2s; position:relative;
@@ -415,6 +512,10 @@ path.cam-connection.cam-conn-active{ stroke:var(--dusk1); stroke-width:2.5; stro
   .chapter-node{ min-width:86px; }
   .cam-node{ width:170px; }
   .cam-workspace{ height:min(58vh, 420px); }
+  .cam-lane-col{ width:170px; min-width:170px; }
+  .cam-lane-label{ font-size:9px; padding:6px 4px; min-width:16px; }
+  .camg-workspace{ height:min(58vh, 420px); }
+  .camg-node-card{ width:180px; padding:12px; }
 }
 @media (prefers-reduced-motion:reduce){ #top-strip, .hdr-badge{ animation:none; } }
 </style>
@@ -557,38 +658,80 @@ path.cam-connection.cam-conn-active{ stroke:var(--dusk1); stroke-width:2.5; stro
             <h3>MAPA DE BIFURCAÇÕES</h3>
             <span id="cam-app-subtitle">CAP. 1</span>
           </div>
-          <button class="cam-app-reset-btn" onclick="camResetChapter()">RESETAR CAP.</button>
+          <button class="cam-app-reset-btn" id="cam-app-reset-btn" onclick="camResetCurrentChapter()">RESETAR CAP.</button>
         </div>
-        <div class="cam-app-hud">
-          <span class="cam-hud-label">MARCADAS NESTE CAP.:</span>
-          <div class="cam-hud-bar-bg"><div id="cam-hud-fill" class="cam-hud-bar-fill" style="width:0%"></div></div>
-          <span id="cam-hud-val" class="cam-hud-value">0/0</span>
+
+        <div id="cam-old-header-extra">
+          <div class="cam-app-hud">
+            <span class="cam-hud-label">MARCADAS NESTE CAP.:</span>
+            <div class="cam-hud-bar-bg"><div id="cam-hud-fill" class="cam-hud-bar-fill" style="width:0%"></div></div>
+            <span id="cam-hud-val" class="cam-hud-value">0/0</span>
+          </div>
+          <div class="cam-preset-bar">
+            <span class="cam-preset-label">ROTAS:</span>
+            <button class="cam-preset-btn" onclick="camLoadPreset('base')">🏆 Base</button>
+            <button class="cam-preset-btn" onclick="camLoadPreset('casamento')">💍 Casamento</button>
+            <button class="cam-preset-btn" onclick="camLoadPreset('segredo')">🏜️ Segredo</button>
+            <button class="cam-preset-btn" onclick="camLoadPreset('revelada')">🚔 Revelada</button>
+            <button class="cam-preset-btn cam-preset-clear" onclick="camResetAll()">✕ Limpar tudo</button>
+          </div>
         </div>
-        <div class="cam-preset-bar">
-          <span class="cam-preset-label">ROTAS:</span>
-          <button class="cam-preset-btn" onclick="camLoadPreset('base')">🏆 Base</button>
-          <button class="cam-preset-btn" onclick="camLoadPreset('casamento')">💍 Casamento</button>
-          <button class="cam-preset-btn" onclick="camLoadPreset('segredo')">🏜️ Segredo</button>
-          <button class="cam-preset-btn" onclick="camLoadPreset('revelada')">🚔 Revelada</button>
-          <button class="cam-preset-btn cam-preset-clear" onclick="camResetAll()">✕ Limpar tudo</button>
+
+        <div id="camg-header-extra" style="display:none;">
+          <div class="camg-hud-row" id="camg-hud-row"></div>
+          <div class="cam-preset-bar">
+            <span class="cam-preset-label">ROTAS:</span>
+            <button class="cam-preset-btn" onclick="camgLoadPreset('base')">🏆 Base</button>
+            <button class="cam-preset-btn" onclick="camgLoadPreset('casamento')">💍 Casamento</button>
+            <button class="cam-preset-btn" onclick="camgLoadPreset('segredo')">🏜️ Segredo</button>
+            <button class="cam-preset-btn" onclick="camgLoadPreset('revelada')">🚔 Revelada</button>
+            <button class="cam-preset-btn cam-preset-clear" onclick="camgResetNarrative()">✕ Reiniciar rota</button>
+          </div>
         </div>
       </div>
 
-      <div id="cam-workspace" class="cam-workspace">
-        <div class="cam-chapter-select-float">
-          <label for="cam-chapter-select">CAPÍTULO</label>
-          <select id="cam-chapter-select" onchange="camChangeChapter(this.value)"></select>
+      <div class="cam-chapter-select-float">
+        <label for="cam-chapter-select">CAPÍTULO</label>
+        <select id="cam-chapter-select" onchange="camChangeChapter(this.value)"></select>
+      </div>
+
+      <!-- Sistema antigo (checklist por bifurcação) — segue cobrindo os Caps. 2 a 6 -->
+      <div id="cam-old-ui">
+        <div id="cam-workspace" class="cam-workspace">
+          <div id="cam-nodes-container" class="cam-nodes-container">
+            <svg id="cam-svg-canvas" class="cam-svg-canvas"></svg>
+          </div>
+
+          <div class="cam-zoom-controls">
+            <button class="cam-zoom-btn" onclick="camApplyZoom(-0.15)">−</button>
+            <span id="cam-zoom-val" class="cam-zoom-val">100%</span>
+            <button class="cam-zoom-btn" onclick="camApplyZoom(0.15)">+</button>
+            <button class="cam-zoom-btn" onclick="camResetView()" title="Recentralizar">⟲</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Motor novo de grafo navegável — cobre o Cap. 1 por enquanto -->
+      <div id="camg-ui" style="display:none;">
+        <div id="camg-lane-legend" class="camg-lane-legend" style="display:none;"></div>
+        <div id="camg-workspace" class="camg-workspace">
+          <div id="camg-nodes-container" class="camg-nodes-container">
+            <svg id="camg-svg-canvas" class="camg-svg-canvas"></svg>
+          </div>
+
+          <div class="camg-zoom-controls">
+            <button class="camg-zoom-btn" onclick="camgApplyZoom(-0.15)">−</button>
+            <span id="camg-zoom-val" class="camg-zoom-val">100%</span>
+            <button class="camg-zoom-btn" onclick="camgApplyZoom(0.15)">+</button>
+            <button class="camg-zoom-btn" onclick="camgResetView()" title="Recentralizar">⟲</button>
+          </div>
         </div>
 
-        <div id="cam-nodes-container" class="cam-nodes-container">
-          <svg id="cam-svg-canvas" class="cam-svg-canvas"></svg>
-        </div>
-
-        <div class="cam-zoom-controls">
-          <button class="cam-zoom-btn" onclick="camApplyZoom(-0.15)">−</button>
-          <span id="cam-zoom-val" class="cam-zoom-val">100%</span>
-          <button class="cam-zoom-btn" onclick="camApplyZoom(0.15)">+</button>
-          <button class="cam-zoom-btn" onclick="camResetView()" title="Recentralizar">⟲</button>
+        <div id="camg-popup-backdrop" class="camg-popup-backdrop" onclick="if(event.target===this) camgClosePopup()">
+          <div class="camg-popup">
+            <button class="camg-popup-close" onclick="camgClosePopup()" aria-label="Fechar">✕</button>
+            <div id="camg-popup-body"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -863,105 +1006,7 @@ renderTrofeusDemorados();
 //  2. CAMINHOS (bifurcações narrativas por capítulo)
 // ═══════════════════════════════════════════════
 const CAMINHOS = [
-  // ───────── CAP. 1 — VINCE: ROTA 66 ─────────
-  { id:"v1", cap:"CAP. 1", personagem:"Vince", titulo:"Quantos brilhos tem a mochila da Zoe?", branches:[
-    { tag:"Acertou (Seis)", color:"#d9a969", txt:"Responda \"Seis\" — resposta certa; mesmo assim Zoe fica brava se você espiar antes de responder." },
-    { tag:"Errou", color:"#d9a969", txt:"Responda \"Cinco\" ou \"Sete\"." },
-    { tag:"Espiou", color:"#d9a969", txt:"Escolha \"Espiar\" em vez de responder de cabeça." },
-  ]},
-  { id:"v2", cap:"CAP. 1", personagem:"Vince", titulo:"Reduzir a tensão entre Jim e Michelle na estrada", branches:[
-    { tag:"Reduziu a Tensão", color:"#d9a969", txt:"Escolha \"Jim, chega\" — é a única opção que realmente reduz a tensão entre os dois." },
-    { tag:"Tensão Mantida", color:"#d9a969", txt:"Escolha \"Michelle, deixa pra lá\" ou fique de fora da discussão." },
-  ]},
-  { id:"v3", cap:"CAP. 1", personagem:"Vince", titulo:"Quantos quartos pedir à Joyce no Sonho do Deserto", branches:[
-    { tag:"Dois Quartos", color:"#d9a969", txt:"Peça com jeito (\"Por favor?\") ou insista em falar com o gerente — consegue 2 quartos, mas irrita mais a Joyce." },
-    { tag:"Um Quarto", color:"#d9a969", txt:"Aceite \"Um quarto\" direto — menos atrito com a Joyce." },
-  ]},
-  { id:"v4", cap:"CAP. 1", personagem:"Vince", titulo:"🔀 Ficar com Michelle ou ir com Jim no check-in", branches:[
-    { tag:"Ficou com Michelle", color:"#d9a969", txt:"Fique no quarto com a Michelle — abre a cena da massagem e da conversa sobre a Zoe pular de ano." },
-    { tag:"Foi com Jim", color:"#d9a969", txt:"Vá conversar com o Jim — ele revela o tumor e depois pede pra morar junto." },
-  ]},
-  { id:"v5", cap:"CAP. 1", personagem:"Vince", titulo:"Zoe pular de ano (dependente: ficou com Michelle)", dependsOn:{forkId:"v4",branchIndex:0}, branches:[
-    { tag:"Podemos Tentar", color:"#d9a969", txt:"Apoie a ideia da Zoe pular de ano." },
-    { tag:"Muita Pressão", color:"#d9a969", txt:"Diga que é muita pressão pra Zoe." },
-  ]},
-  { id:"v6", cap:"CAP. 1", personagem:"Vince", titulo:"Jim pede pra morar junto (dependente: foi com Jim)", dependsOn:{forkId:"v4",branchIndex:1}, branches:[
-    { tag:"Não é Boa Ideia", color:"#d9a969", txt:"Recuse a ideia do Jim morar junto." },
-    { tag:"Vou Falar com Michelle", color:"#d9a969", txt:"Diga que vai conversar com a Michelle sobre isso." },
-  ]},
-  { id:"v7", cap:"CAP. 1", personagem:"Vince", titulo:"Largar ou apontar a arma que a Joyce entregou", branches:[
-    { tag:"Largou a Arma", color:"#d9a969", txt:"Largue a arma — de qualquer jeito ela é tomada de você em seguida." },
-    { tag:"Apontou a Arma", color:"#d9a969", txt:"Aponte a arma — facilita acalmar a Joyce mais tarde, na cena do cruzamento com o Dale." },
-  ]},
-  { id:"v8", cap:"CAP. 1", personagem:"Vince", titulo:"🔀 Pedir pra Joyce recuar ou acalmar o cão", branches:[
-    { tag:"Pediu pra Joyce Recuar", color:"#d9a969", txt:"Tente convencer a Joyce a parar de provocar o Dale." },
-    { tag:"Tentou Acalmar o Cão", color:"#d9a969", txt:"Tente acalmar o Zeus em vez de lidar com a Joyce." },
-  ]},
-  { id:"v9", cap:"CAP. 1", personagem:"Vince", titulo:"Convencer a Joyce a recuar (dependente)", dependsOn:{forkId:"v8",branchIndex:0}, branches:[
-    { tag:"Joyce Recuou", color:"#d9a969", txt:"Escolha \"Você não tem um filho?\" — é a única fala que funciona (se apontou a arma antes, ela já recua sozinha)." },
-    { tag:"Joyce Continuou", color:"#d9a969", txt:"\"Ele vai destruir seu motel!\" ou \"Seja razoável...\" não convencem a Joyce." },
-  ]},
-  { id:"v10", cap:"CAP. 1", personagem:"Vince", titulo:"Acalmar o Zeus — QTE (dependente)", dependsOn:{forkId:"v8",branchIndex:1}, branches:[
-    { tag:"Zeus Acalmado", color:"#d9a969", txt:"Complete os 2 QTEs em sequência com sucesso." },
-    { tag:"Dale Chutou o Zeus", color:"#d9a969", txt:"Falhe em qualquer um dos 2 QTEs." },
-  ]},
-  { id:"v11", cap:"CAP. 1", personagem:"Vince", titulo:"Mandaram amordaçar a Joyce", branches:[
-    { tag:"Amordaçou", color:"#d9a969", txt:"Obedeça a ordem do Tyler." },
-    { tag:"Recusou", color:"#d9a969", txt:"Recuse — Vince apanha um soco na cara." },
-  ]},
-  { id:"v12", cap:"CAP. 1", personagem:"Vince", titulo:"🌳 Com quem você está viajando? (Tyler pergunta)", branches:[
-    { tag:"Minha Família", color:"#d9a969", txt:"Revele a família — os Holt vão atrás dela." },
-    { tag:"Só Meu Pai", color:"#d9a969", txt:"Minta pro Tyler — mantém a família escondida." },
-    { tag:"O Circo", color:"#d9a969", txt:"Outra mentira — mesmo efeito de \"Só meu pai\", mantém a família escondida." },
-  ]},
-  { id:"v13", cap:"CAP. 1", personagem:"Vince", titulo:"Big Sam questiona a família refém (dependente: família revelada)", dependsOn:{forkId:"v12",branchIndex:0}, branches:[
-    { tag:"Pretexto", color:"#c17a4a", txt:"Quando o Big Sam perguntar se está tudo bem, escolha \"Socorro!\" — Tyler aparece e mata o Big Sam. 🏆 Pretexto." },
-    { tag:"Big Sam Saiu Sem Saber", color:"#d9a969", txt:"Esconda o brinco da Joyce antes e responda \"Sim, tudo bem\" ao Big Sam — ele vai embora sem desconfiar." },
-  ]},
-  { id:"v14", cap:"CAP. 1", personagem:"Vince", titulo:"Big Sam questiona a chegada da Michelle e Zoe (dependente: família escondida)", dependsOn:{forkId:"v12",branchIndex:[1,2]}, branches:[
-    { tag:"Mensagem Recebida", color:"#c17a4a", txt:"Deixe o Big Sam chamar ajuda pelo rádio do lado de fora (responda \"Sim\" à primeira pergunta); quando o Tyler perguntar se você sabe de algo, responda \"Não\". 🏆 Mensagem Recebida." },
-    { tag:"Pretexto", color:"#c17a4a", txt:"Ao ser questionado se está tudo bem, responda \"Socorro!\" — Tyler mata o Big Sam na hora, do mesmo jeito que no ramo de família revelada. 🏆 Pretexto." },
-    { tag:"Big Sam Saiu Sem Saber", color:"#d9a969", txt:"Esconda o brinco da Joyce e responda \"Sim, tudo bem\" em toda pergunta do Big Sam." },
-  ]},
-  { id:"v15", cap:"CAP. 1", personagem:"Vince", titulo:"Brinco da Joyce caído no chão", branches:[
-    { tag:"Deixou como Evidência", color:"#d9a969", txt:"O Big Sam desconfia mais tarde ao ver o brinco no chão." },
-    { tag:"Escondeu a Evidência", color:"#d9a969", txt:"Ninguém vê o brinco de novo — ajuda o Big Sam a sair sem saber de nada." },
-  ]},
-  { id:"v16", cap:"CAP. 1", personagem:"Vince", titulo:"🌳 Confronto final — tomar a arma do Tyler (QTE)", branches:[
-    { tag:"Queima-Roupa", color:"#c17a4a", txt:"Falhe o QTE de tomar a arma — os dois se despedem, ouve-se um tiro, mas ninguém morre de verdade (a arma já estava sem balas). 🏆 Queima-Roupa + 🏆 E Assim Começa… (qualquer final conclui o capítulo)." },
-    { tag:"Sucesso no QTE", color:"#d9a969", txt:"Complete o QTE com sucesso e siga pra escolha final: render-se ou atirar." },
-  ]},
-  { id:"v17", cap:"CAP. 1", personagem:"Vince", titulo:"Render-se ou atirar no Tyler (dependente: sucesso no QTE)", dependsOn:{forkId:"v16",branchIndex:1}, branches:[
-    { tag:"O Jogo Virou", color:"#c17a4a", txt:"Escolha atirar — Vince aponta a arma pro Tyler. 🏆 O Jogo Virou + 🏆 E Assim Começa… (conclui o Cap.1)." },
-    { tag:"Refém na Mira do Tyler", color:"#d9a969", txt:"Escolha se render — Tyler retoma a arma e aponta de volta pra Vince (também sem balas). 🏆 E Assim Começa… (sem troféu extra)." },
-  ]},
-
-  // ───────── CAP. 1 — JAY: CASA DO XERIFE ─────────
-  { id:"j1", cap:"CAP. 1", personagem:"Jay", titulo:"Cachorro de guarda da casa do xerife", branches:[
-    { tag:"Conversou com o Cão", color:"#d9a969", txt:"O cão se acalma sem perseguição." },
-    { tag:"Foi Perseguido", color:"#d9a969", txt:"Passe sorrateiro ou jogue um graveto — o cão persegue Jay (QTE pra trancá-lo no galpão; falhar machuca Jay, mas tranca do mesmo jeito)." },
-  ]},
-  { id:"j2", cap:"CAP. 1", personagem:"Jay", titulo:"Mijar no refrigerante do xerife?", branches:[
-    { tag:"Mijou no Refrigerante", color:"#d9a969", txt:"Concorde com a ideia do Dale." },
-    { tag:"Recusou", color:"#d9a969", txt:"\"Talvez outra hora.\"" },
-  ]},
-  { id:"j3", cap:"CAP. 1", personagem:"Jay", titulo:"🌳 A Becky vai chamar ajuda?", branches:[
-    { tag:"Alarme Não Soou", color:"#d9a969", txt:"Puxe o botão de ajuda antes que ela aperte — impede o alarme (acalmá-la ou parar a cadeira de rodas dão uma segunda chance de puxar o botão depois)." },
-    { tag:"Alarme Soou", color:"#d9a969", txt:"Deixe a Becky chamar ajuda (ou falhe em impedi-la) — o Dante fica alerta, reduzindo o tempo disponível no cofre." },
-  ]},
-  { id:"j4", cap:"CAP. 1", personagem:"Jay", titulo:"🌳 Encontrar e abrir o cofre do Dante", dependsOn:{forkId:"j3",branchIndex:[0,1]}, branches:[
-    { tag:"Decodificador", color:"#c17a4a", txt:"Vasculhe o escritório (procurar a estante 2x revela o cofre) e digite o código de cabeça: 5926. 🏆 Decodificador." },
-    { tag:"Código Errado/Esquecido", color:"#d9a969", txt:"Erre ou não lembre o código de propósito — parte pro plano B com o pé de cabra." },
-  ]},
-  { id:"j5", cap:"CAP. 1", personagem:"Jay", titulo:"Fuga com o dinheiro (dependente: código certo)", dependsOn:{forkId:"j4",branchIndex:0}, branches:[
-    { tag:"Crime Perfeito", color:"#c17a4a", txt:"Se o alarme não soou (Becky impedida), a família foge de carro sem confronto nenhum. 🏆 Crime Perfeito." },
-    { tag:"Sem Jeito", color:"#c17a4a", txt:"Se o alarme soou, o Dante pega vocês embaixo; no QTE de enfrentá-lo, falhar (ou escolher correr) faz o Dale atirar nele. 🏆 Sem Jeito." },
-  ]},
-  { id:"j6", cap:"CAP. 1", personagem:"Jay", titulo:"Forçar o cofre ou fugir sem dinheiro (dependente: código errado)", dependsOn:{forkId:"j4",branchIndex:1}, branches:[
-    { tag:"Escapou com o Dinheiro (pé de cabra)", color:"#d9a969", txt:"Force o cofre com o pé de cabra (2 chances) — ainda sai com o dinheiro, mas pode cruzar com o Dante dependendo do alarme." },
-    { tag:"Sem Jeito", color:"#c17a4a", txt:"Fuja pela janela ou se esconda sem o dinheiro, e deixe o Dale atirar no Dante no confronto. 🏆 Sem Jeito (variação sem dinheiro)." },
-  ]},
-
+  // ───────── CAP. 1 (Vince + Jay) agora usa o motor de grafo novo — ver CAMG_TREES mais abaixo ─────────
   // ───────── CAP. 2 a 6 (por bifurcação, ainda sem árvore detalhada) ─────────
   { id:4, cap:"CAP. 2", titulo:"O ferimento de Michelle", branches:[
     { tag:"Baleada", color:"#c17a4a", txt:"Escolha \"Corra\" no tiroteio — Michelle leva um tiro, abrindo Chamando Dr. Walker e, depois, Salva-Vidas." },
@@ -1273,6 +1318,12 @@ function camPopulateChapterSelect(){
   const sel = document.getElementById("cam-chapter-select");
   if(!sel) return;
   sel.innerHTML = CAM_CAPS.map(function(c){
+    if(CAMG_TREES[c]){
+      let total = 0;
+      const tree = CAMG_TREES[c];
+      Object.keys(tree).forEach(function(l){ total += tree[l].length; });
+      return '<option value="' + c + '">' + c + ' (grafo — ' + total + ' cenas)</option>';
+    }
     const count = CAMINHOS.filter(function(f){ return f.cap === c; }).length;
     return '<option value="' + c + '">' + c + ' (' + count + ' bif.)</option>';
   }).join("");
@@ -1285,8 +1336,27 @@ function camChangeChapter(capLabel){
   if(sel) sel.value = capLabel;
   const subtitle = document.getElementById("cam-app-subtitle");
   if(subtitle) subtitle.textContent = capLabel;
-  camRenderNodes();
-  camResetView();
+
+  const usaGrafo = !!CAMG_TREES[capLabel];
+  document.getElementById("cam-old-ui").style.display = usaGrafo ? "none" : "";
+  document.getElementById("camg-ui").style.display = usaGrafo ? "" : "none";
+  document.getElementById("cam-old-header-extra").style.display = usaGrafo ? "none" : "";
+  document.getElementById("camg-header-extra").style.display = usaGrafo ? "" : "none";
+
+  if(usaGrafo){
+    camgSelectedChapterId = capLabel;
+    camgLoadPath(capLabel);
+    camgRenderGraph();
+    camgResetView();
+  } else {
+    camRenderNodes();
+    camResetView();
+  }
+}
+
+function camResetCurrentChapter(){
+  if(CAMG_TREES[camCurrentChapter]) camgResetNarrative();
+  else camResetChapter();
 }
 
 // divide as bifurcações do capítulo atual em níveis por profundidade de dependência (suporta cadeias de qualquer tamanho)
@@ -1323,11 +1393,11 @@ function camBuildNodeEl(fork){
     branchesHtml = '<div class="cam-lock-msg">' + camDependencyLabel(fork) + '</div>';
   } else if(isAuto){
     const b = fork.branches[0];
-    branchesHtml = '<div class="cam-branch-btn cam-branch-selected" style="cursor:default;"><span class="cam-branch-tag">✓ ' + b.tag + '</span>' + b.txt + '</div>';
+    branchesHtml = '<div class="cam-branch-btn cam-branch-selected" id="cam-branch-' + fork.id + '-0" style="cursor:default;"><span class="cam-branch-tag">✓ ' + b.tag + '</span>' + b.txt + '</div>';
   } else {
     branchesHtml = fork.branches.map(function(b, idx){
       const sel = selectedIdx === idx;
-      return '<button type="button" class="cam-branch-btn' + (sel ? ' cam-branch-selected' : '') + '" onclick="camSelectBranch(' + fork.id + ',' + idx + ')">' +
+      return '<button type="button" class="cam-branch-btn' + (sel ? ' cam-branch-selected' : '') + '" id="cam-branch-' + fork.id + '-' + idx + '" onclick="camSelectBranch(\'' + fork.id + '\',' + idx + ')">' +
         '<span class="cam-branch-tag"' + (sel ? '' : ' style="color:' + b.color + '"') + '>' + (sel ? '✓ ' : '') + b.tag + '</span>' + b.txt +
         '</button>';
     }).join("");
@@ -1340,19 +1410,64 @@ function camBuildNodeEl(fork){
   return card;
 }
 
+// Cap. 1 tem campo "coluna" (posição cronológica real na história) em toda bifurcação,
+// então renderiza em 2 trilhas horizontais (Vince / Jay) alinhadas por coluna, refletindo
+// os cortes intercalados entre as duas linhas do tempo. Capítulos sem "coluna" continuam
+// usando o layout antigo por nível de dependência, sem nenhuma mudança de comportamento.
+function camBuildLaneLayout(forksDoCapitulo){
+  let maxColuna = 0;
+  forksDoCapitulo.forEach(function(f){ if(f.coluna > maxColuna) maxColuna = f.coluna; });
+  function trilhaDe(pers){
+    const colunas = [];
+    for(let c = 1; c <= maxColuna; c++){
+      colunas.push(forksDoCapitulo.filter(function(f){ return f.personagem === pers && f.coluna === c; }));
+    }
+    return colunas;
+  }
+  return { vince: trilhaDe("Vince"), jay: trilhaDe("Jay") };
+}
+
 function camRenderNodes(){
   camSyncAutoForks();
   const container = document.getElementById("cam-nodes-container");
   if(!container) return;
 
   container.innerHTML = '<svg id="cam-svg-canvas" class="cam-svg-canvas"></svg>';
-  const levels = camBuildLevelsForChapter(camCurrentChapter);
-  levels.forEach(function(levelForks){
-    const col = document.createElement("div");
-    col.className = "cam-node-col";
-    levelForks.forEach(function(fork){ col.appendChild(camBuildNodeEl(fork)); });
-    container.appendChild(col);
-  });
+
+  const forksDoCapitulo = CAMINHOS.filter(function(f){ return f.cap === camCurrentChapter; });
+  const usaTrilhas = forksDoCapitulo.length > 0 && forksDoCapitulo.every(function(f){ return typeof f.coluna === "number" && f.personagem; });
+
+  if(usaTrilhas){
+    const layout = camBuildLaneLayout(forksDoCapitulo);
+    const lanesWrap = document.createElement("div");
+    lanesWrap.className = "cam-lanes";
+    [["Vince", layout.vince], ["Jay", layout.jay]].forEach(function(entry){
+      const pers = entry[0], colunas = entry[1];
+      if(!colunas.some(function(c){ return c.length; })) return;
+      const lane = document.createElement("div");
+      lane.className = "cam-lane";
+      const label = document.createElement("div");
+      label.className = "cam-lane-label cam-lane-label-" + pers.toLowerCase();
+      label.textContent = pers === "Vince" ? "VINCE" : "JAY";
+      lane.appendChild(label);
+      colunas.forEach(function(forksNaColuna){
+        const col = document.createElement("div");
+        col.className = "cam-lane-col";
+        forksNaColuna.forEach(function(fork){ col.appendChild(camBuildNodeEl(fork)); });
+        lane.appendChild(col);
+      });
+      lanesWrap.appendChild(lane);
+    });
+    container.appendChild(lanesWrap);
+  } else {
+    const levels = camBuildLevelsForChapter(camCurrentChapter);
+    levels.forEach(function(levelForks){
+      const col = document.createElement("div");
+      col.className = "cam-node-col";
+      levelForks.forEach(function(fork){ col.appendChild(camBuildNodeEl(fork)); });
+      container.appendChild(col);
+    });
+  }
 
   camUpdateHud();
   camRenderSummary();
@@ -1377,10 +1492,16 @@ function camDrawConnections(){
         const toEl = document.getElementById("cam-fork-" + dep.id);
         if(!fromEl || !toEl) return;
 
+        // Sai do ponto exato da resposta (branch) que gera essa rota, não do centro genérico do card.
+        // Se o card-origem ainda estiver bloqueado (só mostra a mensagem de cadeado, sem botões de
+        // resposta individuais), aproxima a posição pela ordem da resposta dentro do card.
+        const branchEl = document.getElementById("cam-branch-" + fork.id + "-" + idx);
         const fromRect = fromEl.getBoundingClientRect();
-        const toRect = toEl.getBoundingClientRect();
         const x1 = (fromRect.right - cRect.left) / camScale;
-        const y1 = (fromRect.top + fromRect.height / 2 - cRect.top) / camScale;
+        const y1 = branchEl
+          ? (branchEl.getBoundingClientRect().top + branchEl.getBoundingClientRect().height / 2 - cRect.top) / camScale
+          : (fromRect.top + (idx + 0.5) / fork.branches.length * fromRect.height - cRect.top) / camScale;
+        const toRect = toEl.getBoundingClientRect();
         const x2 = (toRect.left - cRect.left) / camScale;
         const y2 = (toRect.top + toRect.height / 2 - cRect.top) / camScale;
         const dx = (x2 - x1) * 0.5;
@@ -1471,11 +1592,556 @@ function camSetupPanZoom(){
   });
 }
 
+// ═══════════════════════════════════════════════
+//  CAMG: motor de grafo navegável (rota única, cenas reais) — Cap. 1
+// ═══════════════════════════════════════════════
+const CAMG_LANES = {
+  "CAP. 1": {
+    vince: { label: "🕴️ VINCE — Rota 66", short:"VINCE", color: "var(--dusk1)" },
+    jay:   { label: "🎒 JAY — Casa do Xerife (30 min antes)", short:"JAY", color: "var(--night)" }
+  }
+};
+
+const CAMG_TREES = {
+  "CAP. 1": {
+    level1: [
+      { id:"v1", lane:"vince", title:"A Mochila da Zoe", text:"Na estrada pro Arizona, Zoe brinca de adivinhação com os pais sobre a mochila dela.", options:[
+        { label:"Respondeu \"Seis\" de cabeça", detail:"Resposta certa de cabeça — mesmo assim Zoe fica brava se perceber que Vince espiou antes.", target:"v2" },
+        { label:"Errou (\"Cinco\" ou \"Sete\")", detail:"Resposta errada, sem consequência maior na história.", target:"v2" },
+        { label:"Espiou antes de responder", detail:"Vince espia o conteúdo da mochila em vez de responder de cabeça.", target:"v2" }
+      ]}
+    ],
+    level2: [
+      { id:"v2", lane:"vince", title:"Tensão entre Jim e Michelle", text:"Jim dirige e começa a implicar com os planos de Michelle pra viagem, gerando atrito no banco da frente.", options:[
+        { label:"\"Jim, chega\"", detail:"Única fala que realmente reduz a tensão entre os dois.", target:"j1" },
+        { label:"Tomou partido da Michelle / ficou de fora", detail:"A tensão entre Jim e Michelle continua.", target:"j1" }
+      ]}
+    ],
+    level3: [
+      { id:"j1", lane:"jay", title:"O Cão de Guarda", text:"Trinta minutos antes, do outro lado da cidade: Jay e a família Holt chegam à casa do xerife Dante pra um assalto planejado. Um cão de guarda os intercepta no quintal.", options:[
+        { label:"Conversou com o cão", detail:"O cão se acalma sem drama.", target:"j2" },
+        { label:"Passou sorrateiro / jogou um graveto", detail:"O cão persegue Jay — QTE pra trancá-lo no galpão.", target:"j2" }
+      ]}
+    ],
+    level4: [
+      { id:"j2", lane:"jay", title:"A Provocação do Dale", text:"Já dentro da casa, Dale sugere uma brincadeira maldosa antes de continuarem o assalto.", options:[
+        { label:"Concordou com a ideia do Dale", detail:"Mija no refrigerante do xerife — sem consequência na história.", target:"v3" },
+        { label:"\"Talvez outra hora\"", detail:"Recusa a brincadeira — sem consequência na história.", target:"v3" }
+      ]}
+    ],
+    level5: [
+      { id:"v3", lane:"vince", title:"Chegada ao Sonho do Deserto", text:"De volta à estrada 66: a família finalmente chega ao motel Sonho do Deserto e Vince negocia a acomodação com a recepcionista Joyce.", options:[
+        { label:"Pediu 2 quartos", detail:"Com jeito ou insistindo com o gerente — irrita mais a Joyce.", target:"v4" },
+        { label:"Aceitou 1 quarto direto", detail:"Menos atrito com a Joyce.", target:"v4" }
+      ]}
+    ],
+    level6: [
+      { id:"v4", lane:"vince", title:"🔀 Ficar com Michelle ou ir com Jim", text:"Já no quarto, Jim chama Vince pra conversar em particular enquanto Michelle cuida da Zoe.", options:[
+        { label:"Ficou no quarto com Michelle", detail:"Leva à conversa sobre Zoe pular de ano.", target:"v5" },
+        { label:"Foi conversar com Jim", detail:"Leva ao pedido do Jim pra morar junto.", target:"v6" }
+      ]}
+    ],
+    level7: [
+      { id:"v5", lane:"vince", title:"Zoe Quer Pular de Ano", text:"A sós com Michelle, os dois relaxam e a conversa acaba caindo sobre Zoe: a escola sugeriu que ela pule de ano.", options:[
+        { label:"\"Podemos tentar\"", detail:"Apoiou a ideia da escola.", target:"j3" },
+        { label:"\"É muita pressão pra ela\"", detail:"Não apoiou a ideia.", target:"j3" }
+      ]},
+      { id:"v6", lane:"vince", title:"O Pedido do Jim", text:"A sós com Jim, Vince descobre que o pai está doente — e Jim aproveita o momento pra pedir pra morar junto com a família de Vince.", options:[
+        { label:"\"Não acho boa ideia\"", detail:"Recusou o pedido do Jim.", target:"j3" },
+        { label:"\"Vou falar com a Michelle\"", detail:"Não recusou na hora.", target:"j3" }
+      ]}
+    ],
+    level8: [
+      { id:"j3", lane:"jay", title:"🔀 A Becky Vai Chamar Ajuda?", text:"De volta à casa do xerife, a esposa dele, Becky, está por perto de um botão de alarme.", options:[
+        { label:"Puxou o botão antes dela", detail:"O alarme não soa — o Dante não fica alerta pro resto do assalto.", target:"j4" },
+        { label:"Deixou ela chamar ajuda", detail:"O alarme soa e o Dante fica alerta.", target:"j4" }
+      ]}
+    ],
+    level9: [
+      { id:"j4", lane:"jay", title:"🌳 O Cofre do Dante", text:"Jay encontra o cofre do xerife — vasculhar a estante duas vezes revela o esconderijo.", options:[
+        { label:"Digitou 5926 de cabeça", detail:"Lembrou o código sozinho. 🏆 Decodificador", target:"j5" },
+        { label:"Errou ou fingiu esquecer o código", detail:"Parte pro plano B, forçando o cofre no pé de cabra.", target:"j6" }
+      ]}
+    ],
+    level10: [
+      { id:"j5", lane:"jay", title:"Fuga com o Dinheiro", text:"Com o cofre já aberto, a família parte com o dinheiro.", options:[
+        { label:"Alarme não soou", detail:"Fuga de carro sem confronto. 🏆 Crime Perfeito", target:"v7" },
+        { label:"Alarme soou — Dante intercepta", detail:"Falhar o QTE (ou fugir) faz o Dale atirar nele. 🏆 Sem Jeito", target:"v7" }
+      ]},
+      { id:"j6", lane:"jay", title:"Plano B: o Pé de Cabra", text:"Sem o código, Jay força o cofre na base da força, com até duas chances no pé de cabra.", options:[
+        { label:"Forçou o cofre e saiu com o dinheiro", detail:"Pode cruzar com o Dante dependendo do alarme.", target:"v7" },
+        { label:"Fugiu sem o dinheiro", detail:"Pela janela ou escondido — o Dale atira no Dante no confronto. 🏆 Sem Jeito", target:"v7" }
+      ]}
+    ],
+    level11: [
+      { id:"v7", lane:"vince", title:"Os Holt Invadem o Motel", text:"De volta ao Sonho do Deserto: os Holt chegam armados e cercam a família de Vince. Joyce, a recepcionista, entrega uma arma escondida pra Vince.", options:[
+        { label:"Largou a arma", detail:"Ela é tomada de você em seguida de qualquer jeito.", target:"v8" },
+        { label:"Apontou a arma", detail:"Ajuda a acalmar a Joyce mais tarde.", target:"v8" }
+      ]}
+    ],
+    level12: [
+      { id:"v8", lane:"vince", title:"🔀 Joyce ou o Cão Zeus?", text:"Joyce começa a provocar Dale, e o cão Zeus late sem parar — a tensão sobe dos dois lados ao mesmo tempo.", options:[
+        { label:"Tentou convencer a Joyce", detail:"Foca em acalmar a recepcionista primeiro.", target:"v9" },
+        { label:"Tentou acalmar o Zeus", detail:"Foca no cão primeiro, via sequência de QTEs.", target:"v10" }
+      ]}
+    ],
+    level13: [
+      { id:"v9", lane:"vince", title:"Convencer a Joyce", text:"Vince tenta fazer a Joyce parar de provocar o Dale antes que a situação piore.", options:[
+        { label:"\"Você não tem um filho?\"", detail:"Funciona — e se apontou a arma antes, ela já recua sozinha.", target:"v11" },
+        { label:"\"Ele vai destruir seu motel\" / \"Seja razoável\"", detail:"Não convencem a Joyce.", target:"v11" }
+      ]},
+      { id:"v10", lane:"vince", title:"Acalmar o Zeus", text:"Vince tenta acalmar o cão Zeus através de uma sequência de QTEs.", options:[
+        { label:"Completou os 2 QTEs", detail:"Zeus é acalmado com sucesso.", target:"v11" },
+        { label:"Falhou em algum QTE", detail:"Dale chuta o Zeus.", target:"v11" }
+      ]}
+    ],
+    level14: [
+      { id:"v11", lane:"vince", title:"Ordem pra Amordaçar a Joyce", text:"Pra Joyce parar de atrapalhar de vez, Tyler manda Vince amordaçá-la.", options:[
+        { label:"Obedeceu a ordem do Tyler", detail:"Amordaça a Joyce.", target:"v12" },
+        { label:"Recusou", detail:"Vince apanha um soco na cara.", target:"v12" }
+      ]}
+    ],
+    level15: [
+      { id:"v12", lane:"vince", title:"🌳 \"Com Quem Você Está Viajando?\"", text:"Tyler encurrala Vince com uma pergunta direta sobre quem mais está na viagem.", options:[
+        { label:"\"Minha família\"", detail:"Revela — os Holt vão atrás de Michelle e Zoe.", target:"v15a" },
+        { label:"\"Só meu pai\"", detail:"Mente — mantém a família escondida.", target:"v15b" },
+        { label:"\"O circo\"", detail:"Outra mentira — mesmo efeito de manter a família escondida.", target:"v15b" }
+      ]}
+    ],
+    level16: [
+      { id:"v15a", lane:"vince", title:"O Brinco Caído da Joyce", text:"No meio da confusão, um brinco da Joyce cai no chão — bem na hora em que a família de Vince está prestes a ser encontrada.", options:[
+        { label:"Deixou como evidência", detail:"Não esconde o brinco.", target:"v13" },
+        { label:"Escondeu a evidência", detail:"Esconde o brinco antes que alguém repare.", target:"v13" }
+      ]},
+      { id:"v15b", lane:"vince", title:"O Brinco Caído da Joyce", text:"No meio da confusão, um brinco da Joyce cai no chão — mesmo com a família de Vince ainda escondida dos Holt.", options:[
+        { label:"Deixou como evidência", detail:"Não esconde o brinco.", target:"v14" },
+        { label:"Escondeu a evidência", detail:"Esconde o brinco antes que alguém repare.", target:"v14" }
+      ]}
+    ],
+    level17: [
+      { id:"v13", lane:"vince", title:"Big Sam Questiona (Família Revelada)", text:"O policial Big Sam chega em rotina e, sabendo que a família de Vince foi encontrada, faz perguntas incômodas bem na frente dos Holt.", options:[
+        { label:"Gritou \"Socorro!\"", detail:"Tyler mata o Big Sam na hora. 🏆 Pretexto — encerra o capítulo aqui.", target:"final_pretexto" },
+        { label:"Escondeu o brinco e disse \"Sim, tudo bem\"", detail:"Big Sam sai sem desconfiar — o capítulo segue pro confronto final.", target:"v16" }
+      ]},
+      { id:"v14", lane:"vince", title:"Big Sam Questiona (Família Escondida)", text:"O policial Big Sam também aparece nesta rota, mesmo sem saber que há mais alguém escondido.", options:[
+        { label:"Deixou o Big Sam chamar ajuda pelo rádio", detail:"Responder \"Sim\" e depois \"Não\" pro Tyler. 🏆 Mensagem Recebida — encerra o capítulo aqui.", target:"final_mensagem" },
+        { label:"Gritou \"Socorro!\"", detail:"Tyler mata o Big Sam do mesmo jeito. 🏆 Pretexto — encerra o capítulo aqui.", target:"final_pretexto" },
+        { label:"Escondeu o brinco e disse \"Sim, tudo bem\"", detail:"Em toda pergunta — Big Sam vai embora sem saber. O capítulo segue pro confronto final.", target:"v16" }
+      ]}
+    ],
+    level18: [
+      { id:"v16", lane:"vince", title:"🌳 Confronto Final com Tyler", text:"Chega o momento decisivo: Vince tenta tomar a arma do Tyler à força, num QTE tenso.", options:[
+        { label:"Falhou o QTE", detail:"De propósito ou por acidente. 🏆 Queima-Roupa — encerra o capítulo aqui.", target:"final_queimaroupa" },
+        { label:"Completou o QTE", detail:"Segue pra escolha final do capítulo.", target:"v17" }
+      ]},
+      { id:"final_pretexto", lane:"vince", type:"final", title:"🏆 Pretexto", trophy:"🏆 Pretexto + 🏆 E Assim Começa…", text:"Tyler perde a paciência e mata o Big Sam ali mesmo, na frente de todos — mudando o tom do capítulo." },
+      { id:"final_mensagem", lane:"vince", type:"final", title:"🏆 Mensagem Recebida", trophy:"🏆 Mensagem Recebida + 🏆 E Assim Começa…", text:"Big Sam sai do motel achando que está tudo bem, mas já pediu reforços pelo rádio sem que os Holt percebam." }
+    ],
+    level19: [
+      { id:"v17", lane:"vince", title:"Render-se ou Atirar", text:"Com a arma do Tyler finalmente em mãos, Vince encara a escolha mais pesada do capítulo.", options:[
+        { label:"Atirou", detail:"Vince aponta a arma de volta pro Tyler. 🏆 O Jogo Virou", target:"final_jogovirou" },
+        { label:"Se rendeu", detail:"Tyler retoma a arma (também sem balas) e aponta de volta pra ele.", target:"final_refem" }
+      ]},
+      { id:"final_queimaroupa", lane:"vince", type:"final", title:"🏆 Queima-Roupa", trophy:"🏆 Queima-Roupa + 🏆 E Assim Começa…", text:"Os dois se despedem no forcejo e um tiro ecoa — mas ninguém morre, porque a arma já estava sem balas." }
+    ],
+    level20: [
+      { id:"final_jogovirou", lane:"vince", type:"final", title:"🏆 O Jogo Virou", trophy:"🏆 O Jogo Virou + 🏆 E Assim Começa…", text:"Vince vira o jogo e aponta a arma de volta pro Tyler, fechando o Capítulo 1 com os papéis invertidos." },
+      { id:"final_refem", lane:"vince", type:"final", title:"Refém na Mira do Tyler", trophy:"🏆 E Assim Começa…", text:"Vince se rende e devolve a arma — Tyler a retoma e aponta de volta pra ele, fechando o capítulo com Vince outra vez à mercê dos Holt." }
+    ]
+  }
+};
+
+let camgActivePath = [];
+let camgChoiceIndex = {};
+let camgSelectedChapterId = "CAP. 1";
+let camgScale = 1;
+
+function camgFirstNodeId(chapterId){
+  const tree = CAMG_TREES[chapterId];
+  const firstLevelKey = Object.keys(tree)[0];
+  return tree[firstLevelKey][0].id;
+}
+
+function camgFindNodeById(id){
+  const tree = CAMG_TREES[camgSelectedChapterId];
+  for(const level in tree){
+    const found = tree[level].find(function(n){ return n.id === id; });
+    if(found) return found;
+  }
+  return null;
+}
+
+function camgApplyPathArray(ids){
+  camgActivePath = ids.slice();
+  camgChoiceIndex = {};
+  for(let i=0;i<ids.length-1;i++){
+    const node = camgFindNodeById(ids[i]);
+    if(!node || !node.options) continue;
+    const idx = node.options.findIndex(function(o){ return o.target === ids[i+1]; });
+    if(idx !== -1) camgChoiceIndex[ids[i]] = idx;
+  }
+}
+
+function camgLoadPath(chapterId){
+  try{
+    const raw = localStorage.getItem("adf_camg_path_" + chapterId);
+    if(raw){
+      const saved = JSON.parse(raw);
+      camgActivePath = saved.path || [camgFirstNodeId(chapterId)];
+      camgChoiceIndex = saved.choice || {};
+    } else {
+      camgActivePath = [camgFirstNodeId(chapterId)];
+      camgChoiceIndex = {};
+    }
+  }catch(e){
+    camgActivePath = [camgFirstNodeId(chapterId)];
+    camgChoiceIndex = {};
+  }
+}
+function camgSavePath(){
+  try{ localStorage.setItem("adf_camg_path_" + camgSelectedChapterId, JSON.stringify({ path:camgActivePath, choice:camgChoiceIndex })); }catch(e){}
+}
+
+function camgIsEdgeActive(sourceId, targetId){
+  for(let i=0;i<camgActivePath.length-1;i++){
+    if(camgActivePath[i] === sourceId && camgActivePath[i+1] === targetId) return true;
+  }
+  return false;
+}
+
+function camgBuildNodeCard(node){
+  const nodeIndex = camgActivePath.indexOf(node.id);
+  const isSelected = nodeIndex !== -1;
+  const hasDecisionBeenMade = isSelected && nodeIndex < camgActivePath.length - 1;
+  const chosenTarget = hasDecisionBeenMade ? camgActivePath[nodeIndex + 1] : null;
+  const isFinal = node.type === "final";
+
+  let statusClass = "";
+  if(node.lane) statusClass += " lane-" + node.lane;
+  if(isFinal) statusClass += " final-node";
+  statusClass += isSelected ? " selected" : " dimmed-node";
+
+  const trophyHTML = node.trophy ? '<div class="camg-trophy-badge">' + node.trophy + '</div>' : "";
+
+  let laneBadgeHTML = "";
+  const lanesForChapter = CAMG_LANES[camgSelectedChapterId];
+  if(node.lane && lanesForChapter && lanesForChapter[node.lane]){
+    const shortLabel = lanesForChapter[node.lane].label.split("—")[0].trim();
+    laneBadgeHTML = '<span class="camg-lane-badge lane-' + node.lane + '">' + shortLabel + '</span>';
+  }
+
+  const card = document.createElement("div");
+  card.className = "camg-node-card" + statusClass;
+  card.id = "camg-" + node.id;
+
+  let optionsHTML = "";
+  if(node.options && node.options.length){
+    optionsHTML = '<div class="camg-node-options">' + node.options.map(function(opt, idx){
+      const isOptionChosen = hasDecisionBeenMade && chosenTarget === opt.target && camgChoiceIndex[node.id] === idx;
+      const isOptionLocked = !isSelected || (hasDecisionBeenMade && !isOptionChosen);
+      const optId = 'camg-opt-' + node.id + '-' + idx;
+      if(isOptionChosen){
+        return '<button class="camg-option-btn chosen" id="' + optId + '" title="Clique pra desmarcar e testar outra rota" onclick="camgSelectBranch(\'' + node.id + '\',' + idx + ',\'' + opt.target + '\')"><span>' + opt.label + '</span><span>✓</span></button>';
+      } else if(isOptionLocked){
+        return '<button class="camg-option-btn locked" id="' + optId + '" disabled title="Desmarque a escolha ativa acima pra reabrir esta rota"><span>' + opt.label + '</span><span>🔒</span></button>';
+      }
+      return '<button class="camg-option-btn" id="' + optId + '" onclick="camgSelectBranch(\'' + node.id + '\',' + idx + ',\'' + opt.target + '\')"><span>' + opt.label + '</span><span>➔</span></button>';
+    }).join("") + '</div>';
+  } else if(isFinal){
+    optionsHTML = '<div class="camg-status-msg final">🏁 FIM DO CAPÍTULO</div>';
+  }
+
+  card.innerHTML =
+    '<div class="camg-node-header"><span style="display:flex;align-items:center;gap:6px;"><span class="camg-node-id">' + node.id.toUpperCase() + '</span>' + laneBadgeHTML + '</span>' +
+      '<button type="button" class="camg-info-btn" onclick="camgOpenPopup(\'' + node.id + '\')" title="Detalhes desta cena">ℹ</button></div>' +
+    trophyHTML +
+    '<div class="camg-node-title">' + node.title + '</div>' +
+    '<div class="camg-node-text">' + node.text + '</div>' +
+    optionsHTML;
+
+  return card;
+}
+
+function camgRenderGraphFlat(container, tree){
+  Object.keys(tree).forEach(function(levelKey){
+    const column = document.createElement("div");
+    column.className = "camg-node-col";
+    tree[levelKey].forEach(function(node){ column.appendChild(camgBuildNodeCard(node)); });
+    container.appendChild(column);
+  });
+}
+
+function camgRenderLaneLegend(){
+  const legend = document.getElementById("camg-lane-legend");
+  const lanes = CAMG_LANES[camgSelectedChapterId];
+  if(!legend) return;
+  if(!lanes){ legend.style.display = "none"; legend.innerHTML = ""; return; }
+  legend.style.display = "flex";
+  legend.innerHTML = Object.keys(lanes).map(function(k){
+    const l = lanes[k];
+    return '<span class="camg-lane-chip"><span class="camg-lane-dot" style="background:' + l.color + '"></span>' + l.label + '</span>';
+  }).join("");
+}
+
+function camgRenderGraph(){
+  const container = document.getElementById("camg-nodes-container");
+  if(!container) return;
+  container.innerHTML = '<svg id="camg-svg-canvas" class="camg-svg-canvas"></svg>';
+  container.className = "camg-nodes-container";
+
+  const tree = CAMG_TREES[camgSelectedChapterId];
+
+  camgRenderLaneLegend();
+  camgRenderGraphFlat(container, tree);
+
+  camgUpdateHUD();
+  setTimeout(camgDrawConnections, 50);
+}
+
+function camgSelectBranch(sourceId, optIndex, targetId){
+  const sourceIndex = camgActivePath.indexOf(sourceId);
+  if(sourceIndex === -1) return;
+  if(camgActivePath[sourceIndex + 1] === targetId && camgChoiceIndex[sourceId] === optIndex){
+    camgActivePath = camgActivePath.slice(0, sourceIndex + 1);
+    delete camgChoiceIndex[sourceId];
+  } else {
+    camgActivePath = camgActivePath.slice(0, sourceIndex + 1);
+    camgActivePath.push(targetId);
+    camgChoiceIndex[sourceId] = optIndex;
+  }
+  camgSavePath();
+  camgRenderGraph();
+}
+
+function camgResetNarrative(){
+  camgActivePath = [camgFirstNodeId(camgSelectedChapterId)];
+  camgChoiceIndex = {};
+  camgSavePath();
+  camgRenderGraph();
+}
+
+function camgUpdateHUD(){
+  const row = document.getElementById("camg-hud-row");
+  if(!row) return;
+  const tree = CAMG_TREES[camgSelectedChapterId];
+  let total = 0;
+  Object.keys(tree).forEach(function(l){ total += tree[l].length; });
+
+  const trophies = [];
+  camgActivePath.forEach(function(id){
+    const node = camgFindNodeById(id);
+    if(node && node.trophy) trophies.push(node.trophy);
+  });
+
+  let html = '<span class="camg-hud-label">CENAS PERCORRIDAS NESTA ROTA:</span> <span class="camg-hud-label" style="color:var(--ouro);">' + camgActivePath.length + ' de ' + total + ' possíveis</span>';
+  trophies.forEach(function(t){ html += '<span class="camg-trophy-chip">' + t + '</span>'; });
+  row.innerHTML = html;
+}
+
+function camgDrawConnections(){
+  const svg = document.getElementById("camg-svg-canvas");
+  const workspace = document.getElementById("camg-workspace");
+  if(!svg || !workspace) return;
+
+  const fullWidth = Math.max(workspace.scrollWidth, workspace.clientWidth);
+  const fullHeight = Math.max(workspace.scrollHeight, workspace.clientHeight);
+  svg.setAttribute("width", fullWidth);
+  svg.setAttribute("height", fullHeight);
+  svg.style.width = fullWidth + "px";
+  svg.style.height = fullHeight + "px";
+  svg.innerHTML = "";
+
+  const tree = CAMG_TREES[camgSelectedChapterId];
+  Object.keys(tree).forEach(function(levelKey){
+    tree[levelKey].forEach(function(node){
+      if(!node.options) return;
+      const sourceEl = document.getElementById("camg-" + node.id);
+      if(!sourceEl) return;
+      const sourceRect = sourceEl.getBoundingClientRect();
+      const wsRect = workspace.getBoundingClientRect();
+
+      node.options.forEach(function(opt, idx){
+        const targetEl = document.getElementById("camg-" + opt.target);
+        if(!targetEl) return;
+
+        // A origem é o botão exato da resposta (não o centro do card), então cada escolha
+        // mostra visivelmente pra onde ELA leva — mesmo quando duas respostas diferentes
+        // do mesmo nó levam pro mesmo próximo nó.
+        const originEl = document.getElementById("camg-opt-" + node.id + "-" + idx);
+        const originRect = originEl ? originEl.getBoundingClientRect() : sourceRect;
+        const targetRect = targetEl.getBoundingClientRect();
+
+        const x1 = sourceRect.right - wsRect.left + workspace.scrollLeft;
+        const y1 = originRect.top + originRect.height / 2 - wsRect.top + workspace.scrollTop;
+        const x2 = targetRect.left - wsRect.left + workspace.scrollLeft;
+        const y2 = targetRect.top + targetRect.height / 2 - wsRect.top + workspace.scrollTop;
+
+        const dx = (x2 - x1) * 0.5;
+        const pathData = "M " + x1 + " " + y1 + " C " + (x1 + dx) + " " + y1 + ", " + (x2 - dx) + " " + y2 + ", " + x2 + " " + y2;
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathData);
+
+        // Só a resposta REALMENTE escolhida acende — não qualquer resposta que aponte pro
+        // mesmo alvo (duas respostas podem coincidir no destino sem ser a mesma rota).
+        const isActive = camgChoiceIndex[node.id] === idx && camgIsEdgeActive(node.id, opt.target);
+        let cls = "camg-connection";
+        if(isActive){
+          cls += " active";
+          const targetNode = camgFindNodeById(opt.target);
+          cls += (targetNode && targetNode.type === "final") ? " final" : " lane-" + (node.lane || "vince");
+        }
+        path.setAttribute("class", cls);
+        svg.appendChild(path);
+      });
+    });
+  });
+}
+
+function camgApplyZoom(delta, clientX, clientY){
+  const workspace = document.getElementById("camg-workspace");
+  const container = document.getElementById("camg-nodes-container");
+  if(!workspace || !container) return;
+  const oldScale = camgScale;
+  camgScale = Math.min(Math.max(0.5, camgScale + delta), 1.8);
+  if(camgScale === oldScale) return;
+
+  const wsRect = workspace.getBoundingClientRect();
+  const anchorX = clientX != null ? clientX - wsRect.left : workspace.clientWidth / 2;
+  const anchorY = clientY != null ? clientY - wsRect.top : workspace.clientHeight / 2;
+  const contentX = anchorX + workspace.scrollLeft;
+  const contentY = anchorY + workspace.scrollTop;
+  const ratio = camgScale / oldScale;
+
+  container.style.transform = "scale(" + camgScale + ")";
+  workspace.scrollLeft = contentX * ratio - anchorX;
+  workspace.scrollTop = contentY * ratio - anchorY;
+
+  const zoomVal = document.getElementById("camg-zoom-val");
+  if(zoomVal) zoomVal.textContent = Math.round(camgScale * 100) + "%";
+  camgDrawConnections();
+}
+
+function camgResetView(){
+  camgScale = window.innerWidth < 600 ? 0.85 : 1;
+  const container = document.getElementById("camg-nodes-container");
+  if(container) container.style.transform = "scale(" + camgScale + ")";
+  const workspace = document.getElementById("camg-workspace");
+  if(workspace){ workspace.scrollLeft = 0; workspace.scrollTop = 0; }
+  const zoomVal = document.getElementById("camg-zoom-val");
+  if(zoomVal) zoomVal.textContent = Math.round(camgScale * 100) + "%";
+  camgDrawConnections();
+}
+
+function camgSetupPanZoom(){
+  const workspace = document.getElementById("camg-workspace");
+  if(!workspace) return;
+  let dragging = false, startX = 0, startY = 0, startScrollX = 0, startScrollY = 0;
+
+  workspace.addEventListener("mousedown", function(e){
+    if(e.target.closest(".camg-node-card") || e.target.closest(".camg-zoom-controls")) return;
+    dragging = true;
+    startX = e.clientX; startY = e.clientY;
+    startScrollX = workspace.scrollLeft; startScrollY = workspace.scrollTop;
+    workspace.classList.add("camg-grabbing");
+  });
+  window.addEventListener("mousemove", function(e){
+    if(!dragging) return;
+    workspace.scrollLeft = startScrollX - (e.clientX - startX);
+    workspace.scrollTop = startScrollY - (e.clientY - startY);
+  });
+  window.addEventListener("mouseup", function(){
+    dragging = false;
+    workspace.classList.remove("camg-grabbing");
+  });
+
+  workspace.addEventListener("wheel", function(e){
+    e.preventDefault();
+    camgApplyZoom(e.deltaY > 0 ? -0.08 : 0.08, e.clientX, e.clientY);
+  }, { passive:false });
+
+  let initialTouchDist = null, lastTouchScale = 1;
+  workspace.addEventListener("touchstart", function(e){
+    if(e.touches.length === 2){
+      initialTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      lastTouchScale = camgScale;
+    }
+  }, { passive:true });
+  workspace.addEventListener("touchmove", function(e){
+    if(e.touches.length === 2 && initialTouchDist){
+      const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      camgApplyZoom((lastTouchScale * (dist / initialTouchDist)) - camgScale);
+    }
+  }, { passive:true });
+  workspace.addEventListener("touchend", function(e){
+    if(e.touches.length < 2) initialTouchDist = null;
+  });
+
+  window.addEventListener("resize", function(){
+    const panel = document.getElementById("panel-caminhos");
+    if(panel && panel.classList.contains("active")) camgDrawConnections();
+  });
+  workspace.addEventListener("scroll", camgDrawConnections);
+}
+
+function camgOpenPopup(nodeId){
+  const node = camgFindNodeById(nodeId);
+  const backdrop = document.getElementById("camg-popup-backdrop");
+  const body = document.getElementById("camg-popup-body");
+  if(!node || !backdrop || !body) return;
+
+  const lanesForChapter = CAMG_LANES[camgSelectedChapterId];
+  const laneLabel = (node.lane && lanesForChapter && lanesForChapter[node.lane]) ? lanesForChapter[node.lane].short : "";
+
+  let html = '<div class="camg-popup-eyebrow"><span class="camg-node-id">' + node.id.toUpperCase() + '</span>';
+  if(laneLabel) html += '<span class="camg-lane-badge lane-' + node.lane + '">' + laneLabel + '</span>';
+  html += '</div>';
+  html += '<div class="camg-popup-title">' + node.title + '</div>';
+  if(node.trophy) html += '<div class="camg-trophy-badge">' + node.trophy + '</div>';
+  html += '<div class="camg-popup-text">' + node.text + '</div>';
+  (node.options || []).forEach(function(opt){
+    if(!opt.detail) return;
+    html += '<div class="camg-popup-option"><div class="camg-popup-option-label">' + opt.label + '</div><div class="camg-popup-option-detail">' + opt.detail + '</div></div>';
+  });
+
+  body.innerHTML = html;
+  backdrop.classList.add("open");
+}
+
+function camgClosePopup(){
+  const backdrop = document.getElementById("camg-popup-backdrop");
+  if(backdrop) backdrop.classList.remove("open");
+}
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape") camgClosePopup();
+});
+
+function camgLoadPreset(nome){
+  const presets = {
+    base:      ["v1","v2","j1","j2","v3","v4","v5","j3","j4","j5","v7","v8","v9","v11","v12","v15b","v14","v16","v17","final_refem"],
+    casamento: ["v1","v2","j1","j2","v3","v4","v5","j3","j4","j5","v7","v8","v10","v11","v12","v15b","v14","v16","v17","final_jogovirou"],
+    segredo:   ["v1","v2","j1","j2","v3","v4","v6","j3","j4","j6","v7","v8","v9","v11","v12","v15b","v14","v16","v17","final_refem"],
+    revelada:  ["v1","v2","j1","j2","v3","v4","v5","j3","j4","j5","v7","v8","v10","v11","v12","v15a","v13","v16","v17","final_jogovirou"]
+  };
+  camgApplyPathArray(presets[nome] || [camgFirstNodeId(camgSelectedChapterId)]);
+  camgSavePath();
+  camgRenderGraph();
+}
+
 camLoadSaved();
 camPopulateChapterSelect();
 camSetupPanZoom();
-camRenderNodes();
-camResetView();
+camgSetupPanZoom();
+// `.panel` usa CSS `contain:content`, o que quebra `position:fixed` (o popup ficaria preso
+// dentro do painel em vez de cobrir a tela). Move o popup pra fora dessa árvore, direto no body.
+const camgPopupEl = document.getElementById("camg-popup-backdrop");
+if(camgPopupEl) document.body.appendChild(camgPopupEl);
+
+camChangeChapter(camCurrentChapter);
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(function(){ camgDrawConnections(); camDrawConnections(); });
+}
 
 // ═══════════════════════════════════════════════
 //  7. RENDER: TROFÉUS (busca + filtro)
